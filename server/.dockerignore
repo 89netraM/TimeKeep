@@ -1,0 +1,6 @@
+bin/
+obj/
+.dockerignore
+dockerfile-compose.yml
+Dockerfile
+README.md

@@ -1,0 +1,34 @@
+version: "3.1"
+
+services:
+  timekeep:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    environment:
+      - ConnectionStrings__TimeKeepDatabase=Host=db;Username=user;Password=password;Database=timekeep
+      - BearerAuthentication__Token=token
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: timekeep
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    environment:
+        PGADMIN_DEFAULT_EMAIL: user@pgadmin.com
+        PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - 8081:80
+    depends_on:
+      - db

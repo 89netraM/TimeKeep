@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "TimeKeep.RPC.Entries";
+
+service EntriesService {
+	rpc List(ListRequest) returns (stream Entry);
+	rpc Get(GetRequest) returns (GetResponse);
+	rpc Create(CreateRequest) returns (CreateResponse);
+	rpc SetStart(SetStartRequest) returns (SetStartResponse);
+	rpc SetEnd(SetEndRequest) returns (SetEndResponse);
+	rpc AddCategories(AddCategoriesRequest) returns (AddCategoriesResponse);
+	rpc RemoveCategories(RemoveCategoriesRequest) returns (RemoveCategoriesResponse);
+	rpc Destroy(DestroyRequest) returns (DestroyResponse);
+}
+
+message ListRequest {
+	Order order = 1;
+	EndStatus end_status = 2;
+	repeated string categories = 3;
+	optional google.protobuf.Timestamp after = 4;
+	optional google.protobuf.Timestamp before = 5;
+}
+
+enum Order {
+	ORDER_START_DESC = 0;
+	ORDER_START_ASC = 1;
+	ORDER_END_DESC = 2;
+	ORDER_END_ASC = 3;
+}
+
+enum EndStatus {
+	END_STATUS_ALL = 0;
+	END_STATUS_ONLY_ACTIVE = 1;
+	END_STATUS_ONLY_COMPLETED = 2;
+}
+
+message Entry {
+	string id = 1;
+	google.protobuf.Timestamp start = 2;
+	optional google.protobuf.Timestamp end = 3;
+	repeated string categories = 4;
+}
+
+message GetRequest {
+	string id = 1;
+}
+
+message GetResponse {
+	GetStatus status = 1;
+	optional Entry entry = 2;
+}
+
+enum GetStatus {
+	GET_STATUS_FAILURE = 0;
+	GET_STATUS_SUCCESS = 1;
+	GET_STATUS_ENTRY_NOT_FOUND = 2;
+}
+
+message CreateRequest {
+	google.protobuf.Timestamp start = 1;
+	optional google.protobuf.Timestamp end = 2;
+	optional string project = 3;
+	repeated string categories = 4;
+}
+
+message CreateResponse {
+	CreateStatus status = 1;
+	optional string id = 2;
+}
+
+enum CreateStatus {
+	CREATE_STATUS_FAILURE = 0;
+	CREATE_STATUS_SUCCESS = 1;
+	CREATE_STATUS_PROJECT_NOT_FOUND = 2;
+	CREATE_STATUS_CATEGORY_NOT_FOUND = 3;
+}
+
+message SetStartRequest {
+	string id = 1;
+	google.protobuf.Timestamp start = 2;
+}
+
+message SetStartResponse {
+	SetStartStatus status = 1;
+}
+
+enum SetStartStatus {
+	SET_START_STATUS_FAILURE = 0;
+	SET_START_STATUS_SUCCESS = 1;
+	SET_START_STATUS_ENTRY_NOT_FOUND = 2;
+}
+
+message SetEndRequest {
+	string id = 1;
+	optional google.protobuf.Timestamp end = 2;
+}
+
+message SetEndResponse {
+	SetEndStatus status = 1;
+}
+
+enum SetEndStatus {
+	SET_END_STATUS_FAILURE = 0;
+	SET_END_STATUS_SUCCESS = 1;
+	SET_END_STATUS_ENTRY_NOT_FOUND = 2;
+}
+
+message AddCategoriesRequest {
+	string id = 1;
+	repeated string categories = 2;
+}
+
+message AddCategoriesResponse {
+	AddCategoriesStatus status = 1;
+}
+
+enum AddCategoriesStatus {
+	ADD_CATEGORIES_STATUS_FAILURE = 0;
+	ADD_CATEGORIES_STATUS_SUCCESS = 1;
+	ADD_CATEGORIES_STATUS_ENTRY_NOT_FOUND = 2;
+	ADD_CATEGORIES_STATUS_CATEGORY_NOT_FOUND = 3;
+}
+
+message RemoveCategoriesRequest {
+	string id = 1;
+	repeated string categories = 2;
+}
+
+message RemoveCategoriesResponse {
+	RemoveCategoriesStatus status = 1;
+}
+
+enum RemoveCategoriesStatus {
+	REMOVE_CATEGORIES_STATUS_FAILURE = 0;
+	REMOVE_CATEGORIES_STATUS_SUCCESS = 1;
+	REMOVE_CATEGORIES_STATUS_ENTRY_NOT_FOUND = 2;
+}
+
+message DestroyRequest {
+	string id = 1;
+}
+
+message DestroyResponse {
+	DestroyStatus status = 1;
+}
+
+enum DestroyStatus {
+	DESTROY_STATUS_FAILURE = 0;
+	DESTROY_STATUS_SUCCESS = 1;
+	DESTROY_STATUS_ENTRY_NOT_FOUND = 2;
+}

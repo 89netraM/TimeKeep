@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+option csharp_namespace = "TimeKeep.RPC.Projects";
+
+service ProjectsService {
+	rpc List(ListRequest) returns (stream Project);
+	rpc Create(CreateRequest) returns (CreateResponse);
+	rpc AddCategories(AddCategoriesRequest) returns (AddCategoriesResponse);
+	rpc RemoveCategories(RemoveCategoriesRequest) returns (RemoveCategoriesResponse);
+	rpc Destroy(DestroyRequest) returns (DestroyResponse);
+}
+
+message ListRequest {
+	Order order = 1;
+}
+
+enum Order {
+	ORDER_ALPHA_ASC = 0;
+	ORDER_ALPHA_DESC = 1;
+}
+
+message Project {
+	string name = 1;
+	repeated string categories = 2;
+}
+
+message CreateRequest {
+	string name = 1;
+	repeated string categories = 2;
+}
+
+message CreateResponse {
+	CreateStatus status = 1;
+}
+
+enum CreateStatus {
+	CREATE_STATUS_FAILURE = 0;
+	CREATE_STATUS_SUCCESS = 1;
+	CREATE_STATUS_PROJECT_EXISTS = 2;
+	CREATE_STATUS_CATEGORY_NOT_FOUND = 3;
+}
+
+message AddCategoriesRequest {
+	string name = 1;
+	repeated string categories = 2;
+}
+
+message AddCategoriesResponse {
+	AddCategoriesStatus status = 1;
+}
+
+enum AddCategoriesStatus {
+	ADD_CATEGORIES_STATUS_FAILURE = 0;
+	ADD_CATEGORIES_STATUS_SUCCESS = 1;
+	ADD_CATEGORIES_STATUS_PROJECT_NOT_FOUND = 2;
+	ADD_CATEGORIES_STATUS_CATEGORY_NOT_FOUND = 3;
+}
+
+message RemoveCategoriesRequest {
+	string name = 1;
+	repeated string categories = 2;
+}
+
+message RemoveCategoriesResponse {
+	RemoveCategoriesStatus status = 1;
+}
+
+enum RemoveCategoriesStatus {
+	REMOVE_CATEGORIES_STATUS_FAILURE = 0;
+	REMOVE_CATEGORIES_STATUS_SUCCESS = 1;
+	REMOVE_CATEGORIES_STATUS_PROJECT_NOT_FOUND = 2;
+}
+
+message DestroyRequest {
+	string name = 1;
+}
+
+message DestroyResponse {
+	DestroyStatus status = 1;
+}
+
+enum DestroyStatus {
+	DESTROY_STATUS_FAILURE = 0;
+	DESTROY_STATUS_SUCCESS = 1;
+	DESTROY_STATUS_PROJECT_NOT_FOUND = 2;
+}

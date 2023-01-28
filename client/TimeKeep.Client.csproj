@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Google.Protobuf" Version="3.21.12"/>
+		<PackageReference Include="Grpc.Net.Client" Version="2.51.0"/>
+		<PackageReference Include="Grpc.Tools" Version="2.51.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+		<PackageReference Include="Spectre.Console.Cli" Version="0.46.0"/>
+	</ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="..\server\protos\categories.proto" GrpcServices="Client"/>
+		<Protobuf Include="..\server\protos\entries.proto" GrpcServices="Client"/>
+		<Protobuf Include="..\server\protos\projects.proto" GrpcServices="Client"/>
+	</ItemGroup>
+</Project>
