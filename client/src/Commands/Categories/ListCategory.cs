@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Grpc.Core;
 using Spectre.Console.Cli;
 using static TimeKeep.RPC.Categories.CategoriesService;
 
@@ -17,7 +18,7 @@ public class ListCategory : AsyncCommand
 		Console.WriteLine("Fetching list of categories:");
 
 		bool anyCategories = false;
-		await foreach (var category in client.List(new()))
+		await foreach (var category in client.List(new()).ResponseStream.ReadAllAsync())
 		{
 			Console.WriteLine($"\t- {category.Name}");
 			anyCategories = true;

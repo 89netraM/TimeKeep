@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Grpc.Core;
 using Spectre.Console.Cli;
 using static TimeKeep.RPC.Projects.ProjectsService;
 
@@ -17,7 +18,7 @@ public class ListProject : AsyncCommand
 		Console.WriteLine("Fetching list of projects:");
 
 		bool anyProjects = false;
-		await foreach (var category in client.List(new()))
+		await foreach (var category in client.List(new()).ResponseStream.ReadAllAsync())
 		{
 			Console.WriteLine($"\t- {category.Name}");
 			anyProjects = true;

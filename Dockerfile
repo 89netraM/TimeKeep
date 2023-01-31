@@ -3,10 +3,12 @@ WORKDIR /app
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ./TimeKeep.csproj .
+WORKDIR /src/rpc
+COPY ./rpc ./
+WORKDIR /src/server
+COPY ./server/TimeKeep.csproj .
 RUN dotnet restore
-COPY . .
+COPY ./server .
 RUN dotnet build -c Release -o /app/build
 
 FROM build AS publish

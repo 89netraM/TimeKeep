@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading.Tasks;
+using Grpc.Core;
 using TimeKeep.RPC.Entries;
 using static TimeKeep.RPC.Entries.EntriesService;
 
@@ -25,7 +26,7 @@ public class EntrySpecificationService
 	private async Task<Guid?> FetchGuidOf(int index)
 	{
 		int i = 0;
-		await foreach (var entry in client.List(new() { EndStatus = EndStatus.OnlyActive, Order = Order.StartDesc }))
+		await foreach (var entry in client.List(new() { EndStatus = EndStatus.OnlyActive, Order = Order.StartDesc }).ResponseStream.ReadAllAsync())
 		{
 			if (i == index)
 			{

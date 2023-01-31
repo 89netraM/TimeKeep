@@ -67,7 +67,7 @@ public class ListEntry : AsyncCommand<ListEntry.Settings>
 		request.Categories.AddRange(settings.Categories);
 
 		var totalTime = TimeSpan.Zero;
-		await foreach (var entry in client.List(request))
+		await foreach (var entry in client.List(request).ResponseStream.ReadAllAsync())
 		{
 			var start = entry.Start.ToDateTime().ToLocalTime();
 			var end = entry.End?.ToDateTime().ToLocalTime();

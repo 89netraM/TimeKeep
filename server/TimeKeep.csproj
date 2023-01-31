@@ -8,10 +8,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Grpc.AspNetCore" Version="2.51.0" />
-		<PackageReference Include="Grpc.Tools" Version="2.51.0">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,10 +15,6 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
-	</ItemGroup>
-	<ItemGroup>
-		<Protobuf Include="protos\categories.proto" GrpcServices="Server" />
-		<Protobuf Include="protos\entries.proto" GrpcServices="Server" />
-		<Protobuf Include="protos\projects.proto" GrpcServices="Server" />
+		<ProjectReference Include="..\rpc\TimeKeep.RPC.csproj" />
 	</ItemGroup>
 </Project>
