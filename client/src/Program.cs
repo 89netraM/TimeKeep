@@ -7,10 +7,12 @@ using Spectre.Console.Cli;
 using TimeKeep.Client;
 using TimeKeep.Client.Commands.Categories;
 using TimeKeep.Client.Commands.Entries;
+using TimeKeep.Client.Commands.Locations;
 using TimeKeep.Client.Commands.Projects;
 using TimeKeep.Client.Infrastructure;
 using static TimeKeep.RPC.Categories.CategoriesService;
 using static TimeKeep.RPC.Entries.EntriesService;
+using static TimeKeep.RPC.Locations.LocationsService;
 using static TimeKeep.RPC.Projects.ProjectsService;
 
 var config = new ConfigurationBuilder()
@@ -26,6 +28,7 @@ services.AddSingleton<EntrySpecificationService>();
 services.AddSingleton<CategoriesServiceClient>();
 services.AddSingleton<EntriesServiceClient>();
 services.AddSingleton<ProjectsServiceClient>();
+services.AddSingleton<LocationsServiceClient>();
 
 var registrar = new TypeRegistrar(services);
 var app = new CommandApp(registrar);
@@ -47,6 +50,7 @@ app.Configure(config =>
 		entry.AddCommand<RemoveCategoriesEntry>("remove-category");
 		entry.AddCommand<SetStartEntry>("set-start");
 		entry.AddCommand<SetEndEntry>("set-end");
+		entry.AddCommand<SetLocationEntry>("set-location");
 		entry.AddCommand<DestroyEntry>("destroy");
 	});
 	config.AddBranch("project", project =>
@@ -56,6 +60,14 @@ app.Configure(config =>
 		project.AddCommand<AddCategoriesProject>("add-category");
 		project.AddCommand<RemoveCategoriesProject>("remove-category");
 		project.AddCommand<DestroyProject>("destroy");
+	});
+	config.AddBranch("location", location =>
+	{
+		location.AddCommand<CreateLocation>("create");
+		location.AddCommand<ListLocation>("list");
+		location.AddCommand<SetNameLocation>("set-name");
+		location.AddCommand<SetAddressLocation>("set-address");
+		location.AddCommand<DestroyLocation>("destroy");
 	});
 
 	config.AddCommand<CreateEntry>("start");

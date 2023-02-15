@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package locations;
+
+option csharp_namespace = "TimeKeep.RPC.Locations";
+
+service LocationsService {
+	rpc List(ListRequest) returns (stream Location);
+	rpc Create(CreateRequest) returns (CreateResponse);
+	rpc SetName(SetNameRequest) returns (SetNameResponse);
+	rpc SetAddress(SetAddressRequest) returns (SetAddressResponse);
+	rpc Destroy(DestroyRequest) returns (DestroyResponse);
+}
+
+message ListRequest {
+	Order order = 1;
+}
+
+enum Order {
+	ORDER_NAME_DESC = 0;
+	ORDER_NAME_ASC = 1;
+}
+
+message Location {
+	string id = 1;
+	optional string name = 2;
+	string address = 3;
+}
+
+message CreateRequest {
+	optional string name = 1;
+	string address = 2;
+}
+
+message CreateResponse {
+	CreateStatus status = 1;
+}
+
+enum CreateStatus {
+	CREATE_STATUS_FAILURE = 0;
+	CREATE_STATUS_SUCCESS = 1;
+	CREATE_STATUS_LOCATION_NAME_EXISTS = 2;
+}
+
+message SetNameRequest {
+	oneof identifier {
+		string id = 1;
+		string old_name = 2;
+	}
+	optional string name = 3;
+}
+
+message SetNameResponse {
+	SetNameStatus status = 1;
+}
+
+enum SetNameStatus {
+	SET_NAME_STATUS_FAILURE = 0;
+	SET_NAME_STATUS_SUCCESS = 1;
+	SET_NAME_STATUS_LOCATION_NOT_FOUND = 2;
+	SET_NAME_STATUS_LOCATION_NAME_EXISTS = 3;
+}
+
+message SetAddressRequest {
+	oneof identifier {
+		string id = 1;
+		string name = 2;
+	}
+	string address = 3;
+}
+
+message SetAddressResponse {
+	SetAddressStatus status = 1;
+}
+
+enum SetAddressStatus {
+	SET_ADDRESS_STATUS_FAILURE = 0;
+	SET_ADDRESS_STATUS_SUCCESS = 1;
+	SET_ADDRESS_STATUS_LOCATION_NOT_FOUND = 2;
+}
+
+message DestroyRequest {
+	oneof identifier {
+		string id = 1;
+		string name = 2;
+	}
+}
+
+message DestroyResponse {
+	DestroyStatus status = 1;
+}
+
+enum DestroyStatus {
+	DESTROY_STATUS_FAILURE = 0;
+	DESTROY_STATUS_SUCCESS = 1;
+	DESTROY_STATUS_LOCATION_NOT_FOUND = 2;
+	DESTROY_STATUS_LOCATION_IN_USE = 3;
+}

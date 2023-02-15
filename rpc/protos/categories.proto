@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package categories;
+
 option csharp_namespace = "TimeKeep.RPC.Categories";
 
 service CategoriesService {

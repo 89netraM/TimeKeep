@@ -11,4 +11,5 @@ public class Entry
 	public DateTime Start { get; set; }
 	public DateTime? End { get; set; }
 	public ICollection<Category> Categories { get; set; }
+	public Location? Location { get; set; }
 }

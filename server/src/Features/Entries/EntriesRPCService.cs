@@ -31,6 +31,15 @@ public class EntriesRPCService : EntriesServiceBase
 				Start = Timestamp.FromDateTime(entry.Start),
 				End = entry.End is DateTime end ? Timestamp.FromDateTime(end) : null,
 			};
+			if (entry.Location is ResponseLocation location)
+			{
+				rpcEntry.Location = new()
+				{
+					Id = location.Id.ToString(),
+					Name = location.Name,
+					Address = location.Address,
+				};
+			}
 			rpcEntry.Categories.AddRange(entry.Categories);
 			await responseStream.WriteAsync(rpcEntry);
 			if (context.CancellationToken.IsCancellationRequested)
@@ -57,6 +66,9 @@ public class EntriesRPCService : EntriesServiceBase
 
 	public override Task<RemoveCategoriesResponse> RemoveCategories(RemoveCategoriesRequest request, ServerCallContext context) =>
 		service.RemoveCategories(request);
+
+	public override Task<SetLocationResponse> SetLocation(SetLocationRequest request, ServerCallContext context) =>
+		service.SetLocation(request);
 
 	public override Task<DestroyResponse> Destroy(DestroyRequest request, ServerCallContext context) =>
 		service.Destroy(request);

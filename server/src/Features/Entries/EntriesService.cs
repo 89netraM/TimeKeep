@@ -68,7 +68,10 @@ public class EntriesService
 				entry.Id,
 				entry.Start,
 				entry.End,
-				entry.Categories.Select(category => category.Name).ToList()));
+				entry.Categories.Select(category => category.Name).ToList(),
+				entry.Location != null
+					? new(entry.Location.Id, entry.Location.Name, entry.Location.Address)
+					: null));
 	}
 
 	public async Task<GetResponse> Get(GetRequest getRequest)
@@ -129,11 +132,27 @@ public class EntriesService
 			}
 		}
 
+		Location? location = null;
+		if (createRequest.LocationIdentifierCase != CreateRequest.LocationIdentifierOneofCase.None)
+		{
+			location = createRequest.LocationIdentifierCase switch
+			{
+				CreateRequest.LocationIdentifierOneofCase.None => throw new InvalidOperationException(),
+				CreateRequest.LocationIdentifierOneofCase.LocationId => await context.Locations.FindAsync(Guid.Parse(createRequest.LocationId)),
+				CreateRequest.LocationIdentifierOneofCase.LocationName => await context.Locations.FirstAsync(l => l.Name == createRequest.LocationName),
+			};
+			if (location is null)
+			{
+				return new CreateResponse { Status = CreateStatus.LocationNotFound };
+			}
+		}
+
 		var entry = new Models.Entry
 		{
 			Start = createRequest.Start.ToDateTime(),
 			End = createRequest.End?.ToDateTime(),
 			Categories = categories,
+			Location = location,
 		};
 		await context.Entries.AddAsync(entry);
 		await context.SaveChangesAsync();
@@ -236,6 +255,42 @@ public class EntriesService
 		return new RemoveCategoriesResponse { Status = RemoveCategoriesStatus.Success };
 	}
 
+	public async Task<SetLocationResponse> SetLocation(SetLocationRequest setLocationRequest)
+	{
+		if (!Guid.TryParse(setLocationRequest.Id, out Guid id))
+		{
+			return new SetLocationResponse { Status = SetLocationStatus.EntryNotFound };
+		}
+		var entry = await context.Entries.FindAsync(id);
+		if (entry is null)
+		{
+			return new SetLocationResponse { Status = SetLocationStatus.EntryNotFound };
+		}
+
+		if (setLocationRequest.LocationIdentifierCase == SetLocationRequest.LocationIdentifierOneofCase.None)
+		{
+			entry.Location = null;
+		}
+		else
+		{
+			var location = setLocationRequest.LocationIdentifierCase switch
+			{
+				SetLocationRequest.LocationIdentifierOneofCase.None => throw new InvalidOperationException(),
+				SetLocationRequest.LocationIdentifierOneofCase.LocationId => await context.Locations.FindAsync(Guid.Parse(setLocationRequest.LocationId)),
+				SetLocationRequest.LocationIdentifierOneofCase.LocationName => await context.Locations.FirstAsync(l => l.Name == setLocationRequest.LocationName),
+			};
+			if (location is null)
+			{
+				return new SetLocationResponse { Status = SetLocationStatus.LocationNotFound };
+			}
+			entry.Location = location;
+		}
+
+		await context.SaveChangesAsync();
+
+		return new SetLocationResponse { Status = SetLocationStatus.Success };
+	}
+
 	public async Task<DestroyResponse> Destroy(DestroyRequest removeRequest)
 	{
 		if (!Guid.TryParse(removeRequest.Id, out Guid id))
@@ -253,4 +308,14 @@ public class EntriesService
 	}
 }
 
-public record ResponseEntry(Guid Id, DateTime Start, DateTime? End, ICollection<string> Categories);
+public record ResponseEntry(
+	Guid Id,
+	DateTime Start,
+	DateTime? End,
+	ICollection<string> Categories,
+	ResponseLocation? Location);
+
+public record ResponseLocation(
+	Guid Id,
+	string? Name,
+	string Address);

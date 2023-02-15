@@ -1,6 +1,9 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "protos/locations.proto";
+
+package entries;
 
 option csharp_namespace = "TimeKeep.RPC.Entries";
 
@@ -12,6 +15,7 @@ service EntriesService {
 	rpc SetEnd(SetEndRequest) returns (SetEndResponse);
 	rpc AddCategories(AddCategoriesRequest) returns (AddCategoriesResponse);
 	rpc RemoveCategories(RemoveCategoriesRequest) returns (RemoveCategoriesResponse);
+	rpc SetLocation(SetLocationRequest) returns (SetLocationResponse);
 	rpc Destroy(DestroyRequest) returns (DestroyResponse);
 }
 
@@ -41,6 +45,7 @@ message Entry {
 	google.protobuf.Timestamp start = 2;
 	optional google.protobuf.Timestamp end = 3;
 	repeated string categories = 4;
+	optional locations.Location location = 5;
 }
 
 message GetRequest {
@@ -63,6 +68,10 @@ message CreateRequest {
 	optional google.protobuf.Timestamp end = 2;
 	optional string project = 3;
 	repeated string categories = 4;
+	oneof location_identifier {
+		string location_id = 5;
+		string location_name = 6;
+	}
 }
 
 message CreateResponse {
@@ -75,6 +84,7 @@ enum CreateStatus {
 	CREATE_STATUS_SUCCESS = 1;
 	CREATE_STATUS_PROJECT_NOT_FOUND = 2;
 	CREATE_STATUS_CATEGORY_NOT_FOUND = 3;
+	CREATE_STATUS_LOCATION_NOT_FOUND = 4;
 }
 
 message SetStartRequest {
@@ -136,6 +146,25 @@ enum RemoveCategoriesStatus {
 	REMOVE_CATEGORIES_STATUS_FAILURE = 0;
 	REMOVE_CATEGORIES_STATUS_SUCCESS = 1;
 	REMOVE_CATEGORIES_STATUS_ENTRY_NOT_FOUND = 2;
+}
+
+message SetLocationRequest {
+	string id = 1;
+	oneof location_identifier {
+		string location_id = 2;
+		string location_name = 3;
+	}
+}
+
+message SetLocationResponse {
+	SetLocationStatus status = 1;
+}
+
+enum SetLocationStatus {
+	SET_LOCATION_STATUS_FAILURE = 0;
+	SET_LOCATION_STATUS_SUCCESS = 1;
+	SET_LOCATION_STATUS_ENTRY_NOT_FOUND = 2;
+	SET_LOCATION_STATUS_LOCATION_NOT_FOUND = 3;
 }
 
 message DestroyRequest {

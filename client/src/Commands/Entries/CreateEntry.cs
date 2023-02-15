@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
+using Spectre.Console;
 using Spectre.Console.Cli;
 using TimeKeep.RPC.Entries;
 using static TimeKeep.RPC.Entries.EntriesService;
@@ -22,6 +23,22 @@ public class CreateEntry : AsyncCommand<CreateEntry.Settings>
 
 		[CommandOption("-c|--categories")]
 		public string[] Categories { get; init; } = Array.Empty<string>();
+
+		[CommandOption("--location-id")]
+		public Guid? LocationId { get; init; }
+
+		[CommandOption("--location-name")]
+		public string? LocationName { get; init; }
+
+		public override ValidationResult Validate()
+		{
+			if (LocationId is not null && LocationName is not null)
+			{
+				return ValidationResult.Error($"Cannot specify both {nameof(LocationId)} and {nameof(LocationName)}");
+			}
+
+			return base.Validate();
+		}
 	}
 
 	private readonly EntriesServiceClient client;
@@ -41,6 +58,14 @@ public class CreateEntry : AsyncCommand<CreateEntry.Settings>
 		if (settings.Project is not null)
 		{
 			request.Project = settings.Project;
+		}
+		if (settings.LocationId is Guid locationId)
+		{
+			request.LocationId = locationId.ToString();
+		}
+		if (settings.LocationName is string locationName)
+		{
+			request.LocationName = locationName;
 		}
 		request.Categories.AddRange(settings.Categories);
 		var response = await client.CreateAsync(request);

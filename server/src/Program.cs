@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TimeKeep.Authentication;
 using TimeKeep.Features.Categories;
 using TimeKeep.Features.Entries;
+using TimeKeep.Features.Locations;
 using TimeKeep.Features.Projects;
 using TimeKeep.Models;
 
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<TimeKeepContext>();
 builder.Services.AddTransient<CategoriesService>();
 builder.Services.AddTransient<EntriesService>();
 builder.Services.AddTransient<ProjectsService>();
+builder.Services.AddTransient<LocationsService>();
 
 var app = builder.Build();
 
@@ -29,6 +31,7 @@ app.UseAuthorization();
 app.MapGrpcService<CategoriesRPCService>();
 app.MapGrpcService<EntriesRPCService>();
 app.MapGrpcService<ProjectsRPCService>();
+app.MapGrpcService<LocationsRPCService>();
 
 using (var scope = app.Services.CreateScope())
 {

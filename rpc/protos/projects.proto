@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package projects;
+
 option csharp_namespace = "TimeKeep.RPC.Projects";
 
 service ProjectsService {

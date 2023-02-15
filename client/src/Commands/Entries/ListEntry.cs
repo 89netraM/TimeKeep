@@ -38,7 +38,7 @@ public class ListEntry : AsyncCommand<ListEntry.Settings>
 				return ValidationResult.Error("Both --only-active and --only-completed can not be specified together");
 			}
 
-			if (After is DateTime after && Before is DateTime before && after < before)
+			if (After is DateTime after && Before is DateTime before && after >= before)
 			{
 				return ValidationResult.Error("When both --after and --before is specified \"after\" must before \"before\"");
 			}
@@ -72,6 +72,17 @@ public class ListEntry : AsyncCommand<ListEntry.Settings>
 			var start = entry.Start.ToDateTime().ToLocalTime();
 			var end = entry.End?.ToDateTime().ToLocalTime();
 			Console.WriteLine($"\t- {entry.Id} ({start} - {end})");
+			if (entry.Location is not null)
+			{
+				if (entry.Location.HasName)
+				{
+					Console.WriteLine($"\t  {entry.Location.Name}");
+				}
+				else
+				{
+					Console.WriteLine($"\t  {entry.Location.Address} ({entry.Location.Id})");
+				}
+			}
 			totalTime += (end ?? DateTime.Now) - start;
 			anyEntries = true;
 		}

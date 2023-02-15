@@ -10,6 +10,7 @@ public class TimeKeepContext : DbContext
 	public DbSet<Entry> Entries => Set<Entry>();
 	public DbSet<Project> Projects => Set<Project>();
 	public DbSet<Category> Categories => Set<Category>();
+	public DbSet<Location> Locations => Set<Location>();
 
 	public TimeKeepContext(IConfiguration configuration, DbContextOptions<TimeKeepContext> options) : base(options) =>
 		this.configuration = configuration;
