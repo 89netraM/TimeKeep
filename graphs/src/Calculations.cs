@@ -51,4 +51,65 @@ public static class Calculations
 			return false;
 		}
 	}
+
+	public static IEnumerable<TimePeriod> ToTimePeriods(this IEnumerable<Entry> entries) =>
+		entries.Select(e => new TimePeriod(e.Start.ToDateTime(), e.End?.ToDateTime() ?? DateTime.UtcNow));
+
+	public static IDictionary<DayOfWeek, TimeSpan> TimeByDayOfWeek(this IEnumerable<TimePeriod> ranges)
+	{
+		var dict = new Dictionary<DayOfWeek, TimeSpan>
+		{
+			[DayOfWeek.Monday] = TimeSpan.Zero,
+			[DayOfWeek.Tuesday] = TimeSpan.Zero,
+			[DayOfWeek.Wednesday] = TimeSpan.Zero,
+			[DayOfWeek.Thursday] = TimeSpan.Zero,
+			[DayOfWeek.Friday] = TimeSpan.Zero,
+			[DayOfWeek.Saturday] = TimeSpan.Zero,
+			[DayOfWeek.Sunday] = TimeSpan.Zero,
+		};
+
+		foreach (var range in ranges)
+		{
+			foreach (var day in dict.Keys)
+			{
+				dict[day] += range.Intersection(day);
+			}
+		}
+
+		return dict;
+	}
+
+	public static IDictionary<Week, TimeSpan> TimeByWeek(this IEnumerable<TimePeriod> ranges)
+	{
+		var dict = new Dictionary<Week, TimeSpan>();
+
+		foreach (var range in ranges)
+		{
+			var startWeek = Week.FromDate(range.Start);
+			dict[startWeek] = dict.GetValueOrDefault(startWeek, TimeSpan.Zero) + range.Intersection(startWeek);
+
+			var endWeek = Week.FromDate(range.End);
+			if (endWeek != startWeek)
+			{
+				dict[endWeek] = dict.GetValueOrDefault(endWeek, TimeSpan.Zero) + range.Intersection(endWeek);
+			}
+		}
+
+		return dict;
+	}
+
+	public static IDictionary<HourOfDay, TimeSpan> TimeByHourOfDay(this IEnumerable<TimePeriod> ranges)
+	{
+		var dict = HourOfDay.All.ToDictionary(h => h, _ => TimeSpan.Zero);
+
+		foreach (var range in ranges)
+		{
+			foreach (var hour in dict.Keys)
+			{
+				dict[hour] += range.Intersection(hour);
+			}
+		}
+
+		return dict;
+	}
 }
