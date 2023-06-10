@@ -1,0 +1,68 @@
+@page "/"
+@namespace TimeKeep.Graphs.Pages
+@model IndexModel
+
+<!DOCTYPE html>
+<html lang="sv">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Exjobbsstatistik</title>
+		<style>
+			html, body {
+				font-family: sans-serif;
+				margin: 0px;
+			}
+
+			h2 {
+				margin: 0px 1rem;
+			}
+
+			@@media screen and (min-width: 800px) {
+				body {
+					display: grid;
+					grid-template-columns: repeat(6, 1fr);
+					gap: 1rem;
+					margin: 0px 1rem;
+					min-height: 100vh;
+				}
+
+				body div {
+					grid-column: span 2;
+				}
+
+				body div:nth-child(1) {
+					grid-column-start: 2;
+					grid-column-end: 4;
+				}
+
+				body div:nth-child(-n + 2) {
+					align-self: end;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<h2>Vad jobbade jag med?</h2>
+			@Model.TimeByCategory.Render()
+		</div>
+		<div>
+			<h2>Var jobbade jag?</h2>
+			@Model.TimeByLocation.Render()
+		</div>
+		<div>
+			<h2>Vilka veckor jobbade jag?</h2>
+			@Model.TimeByWeek.Render()
+		</div>
+		<div>
+			<h2>Vilka veckodagar jobbade jag?</h2>
+			@Model.TimeByDayOfWeek.Render()
+		</div>
+		<div>
+			<h2>Vilka timmar på dygnet jobbade jag?</h2>
+			@Model.TimeByHourOfDay.Render()
+		</div>
+	</body>
+</html>

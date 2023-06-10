@@ -10,7 +10,7 @@ public static class SvgGraph
 	private const double Height = 130.0;
 	private const double Width = 200.0;
 
-	public static void WriteGraph<T>(IEnumerable<KeyValuePair<T, TimeSpan>> data, bool loop, string path)
+	public static SvgDocument WriteGraph<T>(IEnumerable<KeyValuePair<T, TimeSpan>> data, bool loop)
 		where T : notnull
 	{
 		var normalizedData = NormalizeData(data).ToArray();
@@ -21,7 +21,7 @@ public static class SvgGraph
 		AddDots(svg, normalizedData, unitWidth);
 		AddLabels(svg, normalizedData, unitWidth);
 		AddYAxis(svg, data);
-		svg.Save(path);
+		return svg;
 	}
 
 	private static IEnumerable<(string, double)> NormalizeData<T>(IEnumerable<KeyValuePair<T, TimeSpan>> data)

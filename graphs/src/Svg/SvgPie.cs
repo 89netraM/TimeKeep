@@ -7,14 +7,14 @@ namespace TimeKeep.Graphs.Svg;
 
 public static class SvgPie
 {
-	public static void WritePie(IEnumerable<KeyValuePair<string, TimeSpan>> data, string path)
+	public static SvgDocument WritePie(IEnumerable<KeyValuePair<string, TimeSpan>> data)
 	{
 		var normalizedData = NormalizeData(data);
 
 		var svg = new SvgDocument(-2, -1.5, 4, 3);
 		AddPieSlices(svg, normalizedData);
 		AddLabels(svg, data, normalizedData);
-		svg.Save(path);
+		return svg;
 	}
 
 	private static (string, double)[] NormalizeData(IEnumerable<KeyValuePair<string, TimeSpan>> data)

@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using Microsoft.AspNetCore.Html;
 
 namespace TimeKeep.Graphs.Svg;
 
@@ -33,8 +34,6 @@ public class SvgDocument
 			Root.AppendElement("defs");
 	}
 
-	public void Save(string path)
-	{
-		document.Save(path);
-	}
+	public IHtmlContent Render() =>
+		new HtmlString(Root.OuterXml);
 }

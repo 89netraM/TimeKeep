@@ -4,5 +4,7 @@ bin/
 obj/
 .dockerignore
 dockerfile-compose.yml
+graphs.dockerfile-compose.yml
 Dockerfile
+graphs.Dockerfile
 README.md

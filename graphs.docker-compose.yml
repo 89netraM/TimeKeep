@@ -1,0 +1,14 @@
+version: "3.1"
+
+services:
+  timekeep:
+    build:
+      context: ./
+      dockerfile: ./graphs.Dockerfile
+    restart: unless-stopped
+    environment:
+      - Kestrel__Endpoints__Http__Url=http://*:80
+      - TimeKeep__Url=http://localhost:8080
+      - TimeKeep__Token=token
+    ports:
+      - 8080:80
