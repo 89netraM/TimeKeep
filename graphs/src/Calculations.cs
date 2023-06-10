@@ -53,7 +53,7 @@ public static class Calculations
 	}
 
 	public static IEnumerable<TimePeriod> ToTimePeriods(this IEnumerable<Entry> entries) =>
-		entries.Select(e => new TimePeriod(e.Start.ToDateTime(), e.End?.ToDateTime() ?? DateTime.UtcNow));
+		entries.Select(e => new TimePeriod(e.Start.ToDateTime().ToLocalTime(), e.End?.ToDateTime().ToLocalTime() ?? DateTime.Now));
 
 	public static IDictionary<DayOfWeek, TimeSpan> TimeByDayOfWeek(this IEnumerable<TimePeriod> ranges)
 	{
