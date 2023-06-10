@@ -10,5 +10,5 @@ public readonly record struct HourOfDay(int Hour) : IComparable<HourOfDay>
 
 	public int CompareTo(HourOfDay other) => Hour.CompareTo(other.Hour);
 
-	public override string ToString() => $"Hour {Hour:00}";
+	public override string ToString() => Hour.ToString("00");
 }

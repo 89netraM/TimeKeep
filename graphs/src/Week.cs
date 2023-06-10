@@ -13,5 +13,5 @@ public readonly record struct Week(int WeekNumber) : IComparable<Week>
 
 	public int CompareTo(Week other) => WeekNumber.CompareTo(other.WeekNumber);
 
-	public override string ToString() => $"Week {WeekNumber}";
+	public override string ToString() => WeekNumber.ToString();
 }
