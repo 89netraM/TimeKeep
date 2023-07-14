@@ -1,0 +1,111 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="using:TimeKeep.App.Converters"
+             xmlns:c="using:TimeKeep.App.Controls"
+             xmlns:i="using:TimeKeep.App.Input"
+             xmlns:e="using:TimeKeep.RPC.Entries"
+             xmlns:fi="using:FluentAvalonia.FluentIcons"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="150"
+             x:Class="TimeKeep.App.Controls.EntryDisplay"
+             x:DataType="e:Entry">
+	<UserControl.Resources>
+		<converters:TimestampConverter x:Key="TimestampConverter"/>
+		<converters:LocationConverter x:Key="LocationConverter"/>
+
+		<Flyout x:Key="ErrorFlyout" Placement="Center">
+			<StackPanel>
+				<TextBlock Classes="h2" Text="Error"/>
+				<TextBlock AttachedToVisualTree="OnErrorMessageBlockAttachedToVisualTree"
+				           TextWrapping="WrapWithOverflow"/>
+				<Button Click="OnErrorFlyoutOK" Content="OK"
+				        Margin="0,5,0,0" HorizontalAlignment="Right"/>
+			</StackPanel>
+		</Flyout>
+
+		<Flyout x:Key="EndFlyout" Placement="Center" Closing="OnEndFlyoutClosing">
+			<StackPanel>
+				<TextBlock Classes="h2" Text="Ending entry"/>
+				<c:DateTimePicker AttachedToVisualTree="OnEndTimePickerAttachedToVisualTree"/>
+				<StackPanel Margin="0,5,0,0"
+				            HorizontalAlignment="Right" Orientation="Horizontal">
+					<Button Click="OnEndConfirmed" Content="End"
+					        Margin="0,0,5,0"/>
+					<Button Click="OnEndCanceled" Content="Cancel"/>
+				</StackPanel>
+			</StackPanel>
+		</Flyout>
+
+		<Flyout x:Key="DestroyFlyout" Placement="Center" Closing="OnDestroyFlyoutClosing">
+			<StackPanel>
+				<TextBlock Classes="h2" Text="Destroying entry"/>
+				<TextBlock Text="Are you sure?"/>
+				<StackPanel Margin="0,5,0,0"
+				            HorizontalAlignment="Right" Orientation="Horizontal">
+					<Button Click="OnDestroyConfirmed" Content="Destroy"
+					        Margin="0,0,5,0"/>
+					<Button Click="OnDestroyCanceled" Content="Cancel"/>
+				</StackPanel>
+			</StackPanel>
+		</Flyout>
+	</UserControl.Resources>
+	<UserControl.Styles>
+		<Style Selector="ItemsControl:empty">
+			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Border x:Name="Border" Padding="0,10,0,5" Classes="separator" Tapped="OnBorderTapped">
+		<Border.GestureRecognizers>
+			<i:DeactivatablePullGestureRecognizer x:Name="PullGestureRecognizer"
+			                                      PullDirection="RightToLeft"/>
+		</Border.GestureRecognizers>
+
+		<Panel>
+			<StackPanel x:Name="Controls" Orientation="Horizontal"
+			            HorizontalAlignment="Right" Height="40">
+				<Button Click="OnDestroyClick" ToolTip.Tip="Destroy"
+				        Height="40" Width="40"
+				        Margin="0,0,5,0">
+					<fi:FluentIcon Icon="Delete20Regular" Height="15"/>
+				</Button>
+				<Button Click="OnEditClick" ToolTip.Tip="Edit"
+				        Height="40" Width="40"
+				        Margin="5,0,5,0">
+					<fi:FluentIcon Icon="Edit20Regular" Height="15"/>
+				</Button>
+				<Button Click="OnEndClick" ToolTip.Tip="End"
+				        Height="40" Width="40"
+						IsVisible="{Binding End, Converter={x:Static ObjectConverters.IsNull}}"
+				        Margin="5,0,5,0">
+					<fi:FluentIcon Icon="RecordStop20Regular" Height="15"/>
+				</Button>
+			</StackPanel>
+
+			<Grid x:Name="Display" RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,10,*"
+			      Background="{DynamicResource SystemRegionBrush}">
+				<TextBlock Grid.Row="0" Grid.Column="0"
+				           HorizontalAlignment="Stretch" TextAlignment="Right"
+				           Text="{Binding Start, Converter={StaticResource TimestampConverter}}"/>
+				<TextBlock Grid.Row="0" Grid.Column="1"
+				           HorizontalAlignment="Stretch" TextAlignment="Center"
+				           Text="-"/>
+				<TextBlock Grid.Row="0" Grid.Column="2"
+				           HorizontalAlignment="Stretch" TextAlignment="Left"
+				           IsVisible="{Binding !!End}"
+				           Text="{Binding End, Converter={StaticResource TimestampConverter}}"/>
+
+				<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+				           HorizontalAlignment="Stretch" TextAlignment="Center"
+				           Margin="0,10,0,0"
+				           IsVisible="{Binding !!Location}"
+				           Text="{Binding Location, Converter={StaticResource LocationConverter}}"/>
+
+				<c:CategoriesDisplay Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"
+				              Margin="0,5,0,0"
+				              Categories="{Binding Categories}"/>
+			</Grid>
+		</Panel>
+	</Border>
+</UserControl>

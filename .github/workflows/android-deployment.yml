@@ -1,0 +1,36 @@
+name: .NET Core Android
+
+on:
+  push:
+    paths:
+      - "app/**/*"
+
+jobs:
+
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+      
+    - name: Install Workloads
+      run: dotnet workload restore
+
+    - name: Publish Android App
+      run: dotnet publish ./app/TimeKeep.App.Android/TimeKeep.App.Android.csproj -c Release -r android-arm64 --sc -o ./Output
+
+    - name: Release Android App
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Android App
+        files: ./Output/net.xn__sberg_lra.timekeep-Signed.apk
+        draft: true

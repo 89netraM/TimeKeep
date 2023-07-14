@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="using:TimeKeep.App.Controls"
+             xmlns:vm="using:TimeKeep.App.ViewModels"
+             xmlns:fi="using:FluentAvalonia.FluentIcons"
+             mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="600"
+             x:Class="TimeKeep.App.Views.EntriesView"
+             x:DataType="vm:EntriesViewModel">
+	<Panel>
+		<RefreshContainer PullDirection="TopToBottom" RefreshRequested="OnRefreshRequested">
+			<ScrollViewer Padding="0,0,0,-70">
+				<StackPanel>
+					<Border Classes="separator">
+						<TextBlock Margin="20,10"
+						           Classes="h1"
+						           Text="Active"/>
+					</Border>
+					<ItemsControl ItemsSource="{Binding ActiveEntries}"
+					              c:EntryDisplay.EntryDestroyed="OnActiveEntryDestroyed"
+					              c:EntryDisplay.EntryEnded="OnEntryEnded">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<c:EntryDisplay DataContext="{Binding}"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<Border Classes="separator">
+						<TextBlock Margin="20,10"
+						           Classes="h1"
+						           Text="Today"/>
+					</Border>
+					<ItemsControl ItemsSource="{Binding TodaysEntries}"
+					              c:EntryDisplay.EntryDestroyed="OnTodaysEntryDestroyed">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<c:EntryDisplay DataContext="{Binding}"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</ScrollViewer>
+		</RefreshContainer>
+
+		<Button HorizontalAlignment="Right"
+		        VerticalAlignment="Bottom"
+		        Margin="10"
+				Padding="10"
+				Width="50"
+		        CornerRadius="25"
+		        Click="OnAddEntryButtonClick">
+			<fi:FluentIcon Icon="Add20Regular"/>
+		</Button>
+	</Panel>
+</UserControl>

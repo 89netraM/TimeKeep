@@ -18,5 +18,13 @@
 		<PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
 		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="FluentAvalonia.FluentIcons" Version="1.1.201.1-preview7" />
+		<PackageReference Include="FluentAvaloniaUI" Version="2.0.0-rc1" />
+		<PackageReference Include="ReactiveUI.Fody" Version="19.4.1" />
+		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\rpc\TimeKeep.RPC.csproj" />
 	</ItemGroup>
 </Project>

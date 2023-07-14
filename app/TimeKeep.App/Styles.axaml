@@ -1,0 +1,15 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Style Selector="TextBlock.h1">
+		<Setter Property="FontSize" Value="24"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+	</Style>
+	<Style Selector="TextBlock.h2">
+		<Setter Property="FontSize" Value="20"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+	</Style>
+	<Style Selector="Border.separator">
+		<Setter Property="BorderThickness" Value="0,0,0,2"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource ScrollViewerScrollBarsSeparatorBackground}"/>
+	</Style>
+</Styles>

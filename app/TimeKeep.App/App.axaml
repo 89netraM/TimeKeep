@@ -8,5 +8,6 @@
     </Application.DataTemplates>
 	<Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="/Styles.axaml"/>
     </Application.Styles>
 </Application>

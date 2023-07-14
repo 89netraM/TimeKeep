@@ -21,4 +21,8 @@
   <ItemGroup>
     <ProjectReference Include="..\TimeKeep.App\TimeKeep.App.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
 </Project>
