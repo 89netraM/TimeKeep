@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:TimeKeep.App.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="600"
+             x:Class="TimeKeep.App.Views.AddCategoryView"
+             x:DataType="vm:AddCategoryViewModel">
+	<UserControl.Resources>
+		<Flyout x:Key="ErrorFlyout" Placement="Center">
+			<StackPanel>
+				<TextBlock Classes="h2" Text="Error"/>
+				<TextBlock AttachedToVisualTree="OnErrorMessageBlockAttachedToVisualTree"
+				           TextWrapping="WrapWithOverflow"/>
+				<Button Click="OnErrorFyloutOK" Content="OK"
+				        Margin="0,5,0,0" HorizontalAlignment="Right"/>
+			</StackPanel>
+		</Flyout>
+	</UserControl.Resources>
+
+	<Grid RowDefinitions="Auto,*,Auto">
+	    <TextBlock Grid.Row="0"
+	               Classes="h1"
+                   Margin="20,10,20,0"
+	               Text="New Category"/>
+
+		<ScrollViewer Grid.Row="1" Padding="20,0,20,10">
+			<StackPanel>
+				<Label Content="Name" Target="NameBox" Margin="0,10,0,5"/>
+				<TextBox x:Name="NameBox" Text="{Binding Name, Mode=TwoWay}"/>
+			</StackPanel>
+		</ScrollViewer>
+
+		<StackPanel Grid.Row="2"
+		            Orientation="Horizontal"
+		            HorizontalAlignment="Right"
+		            Margin="20,10,20,10"
+		            Spacing="10">
+			<Button Classes="accent"
+			        Content="Add"
+			        Click="OnAddClick"/>
+			<Button Content="Cancel"
+			        Click="OnCancelClick"/>
+		</StackPanel>
+    </Grid>
+</UserControl>

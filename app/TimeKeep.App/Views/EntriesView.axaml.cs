@@ -2,6 +2,7 @@ using System;
 using System.Reactive;
 using System.Reactive.Linq;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
@@ -52,5 +53,35 @@ public partial class EntriesView : ReactiveUserControl<EntriesViewModel>
             RoutedEvent = Navigation.NavigateEvent,
             Source = this,
         });
+    }
+
+    private void OnAddCategoryButtonClick(object? sender, RoutedEventArgs e)
+    {
+        RaiseEvent(new NavigateEventArgs
+        {
+            Destination = typeof(AddCategoryView),
+            RoutedEvent = Navigation.NavigateEvent,
+            Source = this,
+        });
+    }
+
+    private void OnAddProjectButtonClick(object? sender, RoutedEventArgs e)
+    {
+        RaiseEvent(new NavigateEventArgs
+        {
+            Destination = typeof(AddProjectView),
+            RoutedEvent = Navigation.NavigateEvent,
+            Source = this,
+        });
+    }
+
+    private void OnAddEntryButtonContextRequested(object? sender, ContextRequestedEventArgs e)
+    {
+        ButtonHolder.Classes.Add("active");
+    }
+
+    private void OnMoreButtonsCoverTapped(object? sender, TappedEventArgs e)
+    {
+        ButtonHolder.Classes.Remove("active");
     }
 }
