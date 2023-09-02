@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
-namespace TimeKeep.Graphs;
+namespace TimeKeep.Common;
 
 public readonly record struct Week(int WeekNumber) : IComparable<Week>
 {
+	public static IEnumerable<Week> All { get; } = Enumerable.Range(0, 53).Select(w => new Week(w));
+
 	public static Week FromDate(DateTime date)
 	{
 		var cal = CultureInfo.CurrentCulture.Calendar;

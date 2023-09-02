@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TimeKeep.Graphs;
+namespace TimeKeep.Common;
 
 public readonly record struct HourOfDay(int Hour) : IComparable<HourOfDay>
 {

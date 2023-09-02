@@ -29,4 +29,26 @@ public class Duration
 
 		intervals.Add(newInterval);
 	}
+
+	public Duration Intersect(DayOfWeek day) =>
+		Intersect(interval => interval.Intersect(day));
+
+	public Duration Intersect(Week week) =>
+		Intersect(interval => interval.Intersect(week));
+
+	public Duration Intersect(HourOfDay hour) =>
+		Intersect(interval => interval.Intersect(hour));
+
+	public Duration Intersect(Func<Interval, IEnumerable<Interval>> intersector)
+	{
+		var duration = new Duration();
+		foreach (var interval in intervals)
+		{
+			foreach (var intersectingInterval in intersector(interval))
+			{
+				duration.AddInterval(intersectingInterval);
+			}
+		}
+		return duration;
+	}
 }

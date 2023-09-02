@@ -12,6 +12,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
+		<ProjectReference Include="..\common\TimeKeep.Common.csproj" />
 		<ProjectReference Include="..\rpc\TimeKeep.RPC.csproj" />
 	</ItemGroup>
 </Project>

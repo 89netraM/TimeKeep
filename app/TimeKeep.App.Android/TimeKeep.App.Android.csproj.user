@@ -2,8 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <AndroidDesignerPreferredTheme>MyTheme.NoActionBar</AndroidDesignerPreferredTheme>
-    <SelectedDevice>Samsung SM-S901B</SelectedDevice>
-    <SelectedPlatformGroup>PhysicalDevice</SelectedPlatformGroup>
-    <ActiveDebugProfile>Samsung SM-S901B (Android 13.0 - API 33)</ActiveDebugProfile>
+    <SelectedDevice>Pixel_3_XL_API_28</SelectedDevice>
+    <SelectedPlatformGroup>Emulator</SelectedPlatformGroup>
+    <ActiveDebugProfile>Pixel 3 XL API 28 (Android 9.0 - API 28)</ActiveDebugProfile>
+    <DefaultDevice>Pixel_3_XL_API_28</DefaultDevice>
   </PropertyGroup>
 </Project>

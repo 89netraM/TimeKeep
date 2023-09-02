@@ -1,29 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TimeKeep.Common;
 using TimeKeep.RPC.Entries;
 
 namespace TimeKeep.Graphs;
 
 public static class Calculations
 {
-	public static IDictionary<string, TimeSpan> TimeByLocation(this IEnumerable<Entry> entries)
+	public static IDictionary<string, Duration> TimeByLocation(this IEnumerable<Entry> entries)
 	{
-		var dict = new Dictionary<string, TimeSpan>();
+		var dict = new Dictionary<string, Duration>();
 
 		foreach (var entry in entries)
 		{
 			var location = entry.Location?.Name ?? entry.Location?.Address ?? "unknown";
-			var time = entry.Length();
-			dict[location] = dict.GetValueOrDefault(location, TimeSpan.Zero) + time;
+			var interval = entry.ToInterval();
+			if (!dict.TryGetValue(location, out var duration))
+			{
+				duration = dict[location] = new Duration();
+			}
+			duration.AddInterval(interval);
 		}
 
 		return dict;
 	}
 
-	public static IDictionary<string, TimeSpan> TimeByCategory(this IEnumerable<Entry> entries, IEnumerable<string> categories)
+	public static IDictionary<string, Duration> TimeByCategory(this IEnumerable<Entry> entries, IEnumerable<string> categories)
 	{
-		var dict = categories.ToDictionary(c => c, _ => TimeSpan.Zero);
+		var dict = categories.ToDictionary(c => c, _ => new Duration());
 
 		foreach (var entry in entries)
 		{
@@ -32,19 +37,24 @@ public static class Calculations
 				continue;
 			}
 
-			dict["other"] = dict.GetValueOrDefault("other", TimeSpan.Zero) + entry.Length();
+			var interval = entry.ToInterval();
+			if (!dict.TryGetValue("other", out var duration))
+			{
+				duration = dict["other"] = new Duration();
+			}
+			duration.AddInterval(interval);
 		}
 
 		return dict;
 
-		static bool AddToCategory(IDictionary<string, TimeSpan> dict, Entry entry)
+		static bool AddToCategory(IDictionary<string, Duration> dict, Entry entry)
 		{
-			var time = entry.Length();
+			var interval = entry.ToInterval();
 			foreach (var category in entry.Categories)
 			{
-				if (dict.TryGetValue(category, out var totalTime))
+				if (dict.TryGetValue(category, out var duration))
 				{
-					dict[category] = totalTime + time;
+					duration.AddInterval(interval);
 					return true;
 				}
 			}
@@ -52,64 +62,31 @@ public static class Calculations
 		}
 	}
 
-	public static IEnumerable<TimePeriod> ToTimePeriods(this IEnumerable<Entry> entries) =>
-		entries.Select(e => new TimePeriod(e.Start.ToDateTime().ToLocalTime(), e.End?.ToDateTime().ToLocalTime() ?? DateTime.Now));
-
-	public static IDictionary<DayOfWeek, TimeSpan> TimeByDayOfWeek(this IEnumerable<TimePeriod> ranges)
+	public static Duration ToDuration(this IEnumerable<Entry> entries)
 	{
-		var dict = new Dictionary<DayOfWeek, TimeSpan>
+		var duration = new Duration();
+		foreach (var entry in entries)
 		{
-			[DayOfWeek.Monday] = TimeSpan.Zero,
-			[DayOfWeek.Tuesday] = TimeSpan.Zero,
-			[DayOfWeek.Wednesday] = TimeSpan.Zero,
-			[DayOfWeek.Thursday] = TimeSpan.Zero,
-			[DayOfWeek.Friday] = TimeSpan.Zero,
-			[DayOfWeek.Saturday] = TimeSpan.Zero,
-			[DayOfWeek.Sunday] = TimeSpan.Zero,
-		};
-
-		foreach (var range in ranges)
-		{
-			foreach (var day in dict.Keys)
-			{
-				dict[day] += range.Intersection(day);
-			}
+			duration.AddInterval(entry.ToInterval());
 		}
-
-		return dict;
+		return duration;
 	}
 
-	public static IDictionary<Week, TimeSpan> TimeByWeek(this IEnumerable<TimePeriod> ranges)
-	{
-		var dict = new Dictionary<Week, TimeSpan>();
+	public static IDictionary<DayOfWeek, Duration> TimeByDayOfWeek(this Duration duration) =>
+		Enum.GetValues<DayOfWeek>()
+			.ToDictionary(
+				day => day,
+				duration.Intersect);
 
-		foreach (var range in ranges)
-		{
-			var startWeek = Week.FromDate(range.Start);
-			dict[startWeek] = dict.GetValueOrDefault(startWeek, TimeSpan.Zero) + range.Intersection(startWeek);
+	public static IDictionary<Week, Duration> TimeByWeek(this Duration duration) =>
+		Week.All
+			.ToDictionary(
+				day => day,
+				duration.Intersect);
 
-			var endWeek = Week.FromDate(range.End);
-			if (endWeek != startWeek)
-			{
-				dict[endWeek] = dict.GetValueOrDefault(endWeek, TimeSpan.Zero) + range.Intersection(endWeek);
-			}
-		}
-
-		return dict;
-	}
-
-	public static IDictionary<HourOfDay, TimeSpan> TimeByHourOfDay(this IEnumerable<TimePeriod> ranges)
-	{
-		var dict = HourOfDay.All.ToDictionary(h => h, _ => TimeSpan.Zero);
-
-		foreach (var range in ranges)
-		{
-			foreach (var hour in dict.Keys)
-			{
-				dict[hour] += range.Intersection(hour);
-			}
-		}
-
-		return dict;
-	}
+	public static IDictionary<HourOfDay, Duration> TimeByHourOfDay(this Duration duration) =>
+		HourOfDay.All
+			.ToDictionary(
+				day => day,
+			duration.Intersect);
 }
