@@ -13,5 +13,6 @@
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
 		<PackageReference Include="Spectre.Console.Cli" Version="0.46.0"/>
 		<ProjectReference Include="..\rpc\TimeKeep.RPC.csproj" />
+		<ProjectReference Include="..\common\TimeKeep.Common.csproj" />
 	</ItemGroup>
 </Project>

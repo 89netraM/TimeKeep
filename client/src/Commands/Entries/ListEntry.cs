@@ -6,6 +6,7 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using TimeKeep.RPC.Entries;
 using static TimeKeep.RPC.Entries.EntriesService;
+using Duration = TimeKeep.Common.Duration;
 
 namespace TimeKeep.Client.Commands.Entries;
 
@@ -55,8 +56,7 @@ public class ListEntry : AsyncCommand<ListEntry.Settings>
 	public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
 	{
 		Console.WriteLine("Fetching list of entries:");
-
-		bool anyEntries = false;
+		
 		var request = new ListRequest()
 		{
 			EndStatus = GetEndStatus(settings),
@@ -66,7 +66,7 @@ public class ListEntry : AsyncCommand<ListEntry.Settings>
 		};
 		request.Categories.AddRange(settings.Categories);
 
-		var totalTime = TimeSpan.Zero;
+		var duration = new Duration();
 		await foreach (var entry in client.List(request).ResponseStream.ReadAllAsync())
 		{
 			var start = entry.Start.ToDateTime().ToLocalTime();
@@ -83,13 +83,13 @@ public class ListEntry : AsyncCommand<ListEntry.Settings>
 					Console.WriteLine($"\t  {entry.Location.Address} ({entry.Location.Id})");
 				}
 			}
-			totalTime += (end ?? DateTime.Now) - start;
-			anyEntries = true;
+			duration.AddInterval(start, end ?? DateTime.Now);
 		}
 
-		if (anyEntries)
+		var totalDuration = duration.TotalDuration;
+		if (totalDuration > TimeSpan.Zero)
 		{
-			Console.WriteLine($"Total time spent: {totalTime}");
+			Console.WriteLine($"Total time spent: {totalDuration}");
 		}
 		else
 		{
