@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:TimeKeep.App.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="450"
+             x:Class="TimeKeep.App.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+	<Grid RowDefinitions="*,Auto">
+		<StackPanel Grid.Row="0">
+			<Label Target="{Binding #ServerBox}" Content="Server"/>
+			<TextBox x:Name="ServerBox" Text="{Binding Server, Mode=TwoWay}"
+			         IsEnabled="{Binding !IsLoading}"/>
+			<Label Target="{Binding #TokenBox}" Content="Token"/>
+			<TextBox x:Name="TokenBox" Text="{Binding Token, Mode=TwoWay}"
+			         PasswordChar="•" IsEnabled="{Binding !IsLoading}"/>
+		</StackPanel>
+
+		<Button Grid.Row="1" HorizontalAlignment="Right"
+		        Command="{Binding SaveCommand}"
+		        Classes="accent" Content="Save"/>
+	</Grid>
+</UserControl>

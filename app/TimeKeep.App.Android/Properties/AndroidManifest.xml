@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" package="net.xn__sberg_lra.timekeep">
+	<uses-permission android:name="android.permission.INTERNET" />
+	<application android:label="TimeKeep" android:icon="@drawable/icon" android:theme="@style/MyTheme.NoActionBar" />
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+</manifest>
