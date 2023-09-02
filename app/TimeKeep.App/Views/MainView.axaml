@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:fl="using:FluentAvalonia.UI.Controls"
+             xmlns:ic="using:FluentAvalonia.FluentIcons"
+             xmlns:e="using:TimeKeep.App.Events"
+             xmlns:v="using:TimeKeep.App.Views"
+             xmlns:converters="using:TimeKeep.App.Converters"
+             xmlns:vm="using:TimeKeep.App.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TimeKeep.App.Views.MainView"
+             x:DataType="vm:MainViewModel">
+    <UserControl.Resources>
+        <converters:MaxValueConverter x:Key="MaxValueConverter"/>
+    </UserControl.Resources>
+	<Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+	<Grid RowDefinitions="48,*">
+		<Grid Grid.Row="0" ColumnDefinitions="48,*" Background="{Binding #SplitView.PaneBackground}">
+			<Button Grid.Column="0" CornerRadius="0"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    Padding="10"
+			        Background="{Binding $parent[Grid].Background}"
+                    Tapped="HamburgerMenu_Tapped">
+                <ic:FluentIcon Icon="LineHorizontal320Regular"/>
+			</Button>
+		</Grid>
+
+	    <SplitView x:Name="SplitView" Grid.Row="1"
+	               OpenPaneLength="{Binding $parent[Grid].Bounds.Width, Converter={StaticResource MaxValueConverter}, ConverterParameter=320}">
+		    <SplitView.Pane>
+				<v:SettingsView Padding="10"/>
+		    </SplitView.Pane>
+
+			<ContentControl x:Name="Frame"
+                            e:Navigation.NavigationEvent="OnNavigationRequested"
+                            e:Navigation.BackEvent="OnBackRequested">
+                <v:EntriesView/>
+			</ContentControl>
+	    </SplitView>
+    </Grid>
+</UserControl>

@@ -1,0 +1,164 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:c="using:TimeKeep.App.Controls"
+             xmlns:vm="using:TimeKeep.App.ViewModels"
+             xmlns:fi="using:FluentAvalonia.FluentIcons"
+             mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="600"
+             x:Class="TimeKeep.App.Views.EntriesView"
+             x:DataType="vm:EntriesViewModel">
+	<UserControl.Styles>
+		<Style Selector="Panel#ButtonHolder Button">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Bottom"/>
+			<Setter Property="Margin" Value="15"/>
+			<Setter Property="Padding" Value="10"/>
+			<Setter Property="Width" Value="40"/>
+			<Setter Property="CornerRadius" Value="25"/>
+			<Setter Property="IsVisible" Value="False"/>
+			<Setter Property="RenderTransform" Value="translate(0px, 0px)"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Duration="00:00:00.1"/>
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="Panel#ButtonHolder Button.main">
+			<Setter Property="Margin" Value="10"/>
+			<Setter Property="Width" Value="50"/>
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+		<Style Selector="Panel#ButtonHolder.active Button">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+
+		<Style Selector="Panel#ButtonHolder TextBlock">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Bottom"/>
+			<Setter Property="IsVisible" Value="False"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Delay="00:00:00.1" Duration="00:00:00.2"/>
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="Panel#ButtonHolder.active TextBlock">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+
+		<Style Selector="Panel#ButtonHolder Panel#MoreButtonsCover">
+			<Setter Property="Opacity" Value="0"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition Property="Opacity" Duration="00:00:00.3"/>
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="Panel#ButtonHolder.active Panel#MoreButtonsCover">
+			<Setter Property="Background" Value="{DynamicResource SystemRegionBrush}"/>
+			<Setter Property="Opacity" Value="0.5"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Panel>
+		<RefreshContainer PullDirection="TopToBottom" RefreshRequested="OnRefreshRequested">
+			<ScrollViewer>
+				<StackPanel>
+					<Border Classes="separator">
+						<TextBlock Margin="20,10"
+						           Classes="h1"
+						           Text="Active"/>
+					</Border>
+					<ItemsControl ItemsSource="{Binding ActiveEntries}"
+					              c:EntryDisplay.EntryDestroyed="OnActiveEntryDestroyed"
+					              c:EntryDisplay.EntryEnded="OnEntryEnded">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<c:EntryDisplay DataContext="{Binding}"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<Border Classes="separator">
+						<TextBlock Margin="20,10"
+						           Classes="h1"
+						           Text="Today"/>
+					</Border>
+					<ItemsControl ItemsSource="{Binding TodaysEntries}"
+					              c:EntryDisplay.EntryDestroyed="OnTodaysEntryDestroyed">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<c:EntryDisplay DataContext="{Binding}"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+					<Rectangle Height="70"/>
+				</StackPanel>
+			</ScrollViewer>
+		</RefreshContainer>
+
+		<Panel x:Name="ButtonHolder">
+			<Panel x:Name="MoreButtonsCover" Tapped="OnMoreButtonsCoverTapped"/>
+			
+			<Button Click="OnAddProjectButtonClick">
+				<Button.Styles>
+					<Style Selector=".active Button">
+						<Setter Property="RenderTransform" Value="translate(0px, -95px)"/>
+					</Style>
+				</Button.Styles>
+				<fi:FluentIcon Icon="AlbumAdd20Regular"/>
+			</Button>
+			
+			<Button Click="OnAddCategoryButtonClick">
+				<Button.Styles>
+					<Style Selector=".active Button">
+						<Setter Property="RenderTransform" Value="translate(0px, -50px)"/>
+					</Style>
+				</Button.Styles>
+				<fi:FluentIcon Icon="CollectionsAdd20Regular"/>
+			</Button>
+
+			<Panel Margin="0,0,55,25" ClipToBounds="True">
+				<TextBlock Text="New Project">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock">
+							<Setter Property="RenderTransform" Value="translate(100px, -95px)"/>
+						</Style>
+						<Style Selector=".active TextBlock">
+							<Setter Property="RenderTransform" Value="translate(-5px, -95px)"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+
+				<TextBlock Text="New Category">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock">
+							<Setter Property="RenderTransform" Value="translate(100px, -50px)"/>
+						</Style>
+						<Style Selector=".active TextBlock">
+							<Setter Property="RenderTransform" Value="translate(-5px, -50px)"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+
+				<TextBlock Text="New Entry">
+					<TextBlock.Styles>
+						<Style Selector="TextBlock">
+							<Setter Property="RenderTransform" Value="translate(100px, 0px)"/>
+						</Style>
+						<Style Selector=".active TextBlock">
+							<Setter Property="RenderTransform" Value="translate(-5px, 0px)"/>
+						</Style>
+					</TextBlock.Styles>
+				</TextBlock>
+			</Panel>
+
+			<Button Classes="main"
+					Click="OnAddEntryButtonClick"
+			        ContextRequested="OnAddEntryButtonContextRequested">
+				<fi:FluentIcon Icon="Add20Regular"/>
+			</Button>
+		</Panel>
+	</Panel>
+</UserControl>
