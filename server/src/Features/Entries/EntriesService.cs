@@ -47,9 +47,26 @@ public class EntriesService
 			query = query.OrderByDescending(entry => entry.End);
 		}
 
-		if (listRequest.Categories is ICollection<string> categoryNames && categoryNames.Count > 0)
+		var mustCategories = new List<string>();
+		var mustNotCategories = new List<string>();
+		foreach (var category in listRequest.Categories)
 		{
-			query = query.Where(entry => entry.Categories.Count(c => categoryNames.Contains(c.Name)) == categoryNames.Count);
+			if (category[0] == '!')
+			{
+				mustNotCategories.Add(category[1..]);
+			}
+			else
+			{
+				mustCategories.Add(category);
+			}
+		}
+		if (mustCategories.Count > 0)
+		{
+			query = query.Where(entry => entry.Categories.Count(c => mustCategories.Contains(c.Name)) == mustCategories.Count);
+		}
+		if (mustNotCategories.Count > 0)
+		{
+			query = query.Where(entry => entry.Categories.Count(c => mustNotCategories.Contains(c.Name)) == 0);
 		}
 
 		if (listRequest.After is not null)
