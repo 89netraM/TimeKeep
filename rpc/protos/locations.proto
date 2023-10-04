@@ -17,8 +17,8 @@ message ListRequest {
 }
 
 enum Order {
-	ORDER_USAGE_DESC = 0;
-	ORDER_USAGE_ASC = 1;
+	ORDER_USAGE_ASC = 0;
+	ORDER_USAGE_DESC = 1;
 	ORDER_NAME_DESC = 2;
 	ORDER_NAME_ASC = 3;
 }
