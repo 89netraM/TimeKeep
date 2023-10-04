@@ -22,6 +22,8 @@ public class ProjectsService
 
 		query = request.Order switch
 		{
+			Order.UsageAsc => query.OrderBy(project => project.Categories.Min(c => c.Entries.Max(e => e.Start))),
+			Order.UsageDesc => query.OrderByDescending(project => project.Categories.Min(c => c.Entries.Max(e => e.Start))),
 			Order.AlphaAsc => query.OrderBy(project => project.Name),
 			Order.AlphaDesc => query.OrderByDescending(project => project.Name),
 		};
