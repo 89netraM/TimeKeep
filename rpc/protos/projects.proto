@@ -17,8 +17,10 @@ message ListRequest {
 }
 
 enum Order {
-	ORDER_ALPHA_ASC = 0;
-	ORDER_ALPHA_DESC = 1;
+	ORDER_USAGE_ASC = 0;
+	ORDER_USAGE_DESC = 1;
+	ORDER_ALPHA_ASC = 2;
+	ORDER_ALPHA_DESC = 3;
 }
 
 message Project {
