@@ -20,6 +20,8 @@ public class LocationsService
 
 		query = request.Order switch
 		{
+			Order.UsageAsc => query.OrderBy(location => location.Entries.Max(entry => entry.Start)),
+			Order.UsageDesc => query.OrderByDescending(location => location.Entries.Max(entry => entry.Start)),
 			Order.NameAsc => query.OrderBy(location => location.Name),
 			Order.NameDesc => query.OrderByDescending(location => location.Name),
 		};
