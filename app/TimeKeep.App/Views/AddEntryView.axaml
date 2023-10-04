@@ -13,6 +13,9 @@
 		<Style Selector="Label">
 			<Setter Property="Margin" Value="0,10,0,5"/>
 		</Style>
+		<Style Selector="AutoCompleteBox ListBoxItem">
+			<Setter Property="Padding" Value="0"/>
+		</Style>
     </UserControl.Styles>
 	<UserControl.Resources>
 		<converters:LocationConverter x:Key="LocationConverter"/>
@@ -62,7 +65,15 @@
 				<c:CategoriesDisplay Categories="{Binding Categories}" CanRemove="True"/>
 				<Panel>
 					<AutoCompleteBox x:Name="CategoriesBox" ItemsSource="{Binding ExistingCategories}"
-					                 KeyDown="OnAddCategoryKeyDown"/>
+					                 KeyDown="OnAddCategoryKeyDown">
+						<AutoCompleteBox.ItemTemplate>
+							<DataTemplate DataType="x:String">
+								<Grid Background="Transparent" PointerPressed="OnCategoryPressed" Tag="{Binding}">
+									<TextBlock Text="{Binding}" Margin="12,9"/>
+								</Grid>
+							</DataTemplate>
+						</AutoCompleteBox.ItemTemplate>
+					</AutoCompleteBox>
 					<Button CornerRadius="0,3,3,0"
 					        Height="{Binding #CategoriesBox.Bounds.Height}"
 					        HorizontalAlignment="Right"

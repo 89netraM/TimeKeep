@@ -40,6 +40,19 @@ public partial class AddProjectView : ReactiveUserControl<AddProjectViewModel>
         CategoriesBox.Text = string.Empty;
     }
 
+    private async void OnCategoryPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is not Grid { Tag: string category } || string.IsNullOrWhiteSpace(category))
+        {
+            return;
+        }
+
+        e.Handled = true;
+        await ViewModel!.AddCategoryCommand.Execute(category).ToTask();
+        CategoriesBox.Text = string.Empty;
+        CategoriesBox.Focus();
+    }
+
     private async void OnAddClick(object? sender, RoutedEventArgs e)
     {
         var result = await ViewModel!.AddProjectCommand
