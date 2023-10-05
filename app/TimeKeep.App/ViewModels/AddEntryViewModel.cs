@@ -96,7 +96,7 @@ public class AddEntryViewModel : ViewModelBase, IActivatableViewModel
             return;
         }
 
-        var response = client.List(new ProjectListRequest { Order = ProjectOrder.AlphaAsc }, cancellationToken: ct);
+        var response = client.List(new ProjectListRequest { Order = ProjectOrder.UsageDesc }, cancellationToken: ct);
         await foreach (var project in response.ResponseStream.ReadAllAsync(ct))
         {
             Projects.Add(project);
@@ -111,7 +111,7 @@ public class AddEntryViewModel : ViewModelBase, IActivatableViewModel
             return;
         }
 
-        var response = client.List(new LocationListRequest { Order = LocationOrder.NameAsc }, cancellationToken: ct);
+        var response = client.List(new LocationListRequest { Order = LocationOrder.UsageDesc }, cancellationToken: ct);
         Locations.Add(null);
         await foreach (var location in response.ResponseStream.ReadAllAsync(ct))
         {
