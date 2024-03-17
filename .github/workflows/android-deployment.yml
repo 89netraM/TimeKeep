@@ -20,10 +20,16 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
       
     - name: Install Workloads
       run: dotnet workload restore
+
+    - name: Setup Android SDK 27, 28, 29 and 30
+      uses: android-actions/setup-android@v3
+      with:
+        cmdline-tools-version: 9123335
+    - run: sdkmanager tools "platforms;android-27" "platforms;android-28" "platforms;android-29" "platforms;android-30"
 
     - name: Publish Android App
       run: dotnet publish ./app/TimeKeep.App.Android/TimeKeep.App.Android.csproj -c Release -r android-arm64 --sc -o ./Output
