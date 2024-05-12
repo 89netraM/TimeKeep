@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Input.TextInput;
 using Avalonia.Media;
 
@@ -81,5 +82,10 @@ public partial class DateTimePicker : UserControl
     private void OnTimePickerDismissed(object? sender, EventArgs e)
     {
         TimeButton.Flyout?.Hide();
+    }
+
+    private void OnRefreshTimeTapped(object? sender, TappedEventArgs e)
+    {
+        DateTime = DateTimeOffset.Now;
     }
 }
