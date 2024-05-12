@@ -26,4 +26,5 @@ public static class Navigation
 public class NavigateEventArgs : RoutedEventArgs
 {
     public required Type Destination { get; init; }
+    public object?[]? Arguments { get; init; }
 }

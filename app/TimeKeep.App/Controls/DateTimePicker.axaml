@@ -5,7 +5,7 @@
              xmlns:c="using:TimeKeep.App.Controls"
              xmlns:converters="using:TimeKeep.App.Converters"
              xmlns:fi="using:FluentAvalonia.FluentIcons"
-             mc:Ignorable="d" d:DesignWidth="240" d:DesignHeight="30"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="30"
              x:Class="TimeKeep.App.Controls.DateTimePicker"
              x:DataType="c:CategoriesDisplay"
              x:Name="Root">
@@ -20,7 +20,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Grid DataContext="{Binding #Root}" ColumnDefinitions="Auto,Auto">
+	<Grid DataContext="{Binding #Root}" ColumnDefinitions="Auto,Auto,Auto">
 		<MaskedTextBox x:Name="DateBox"
 		               Grid.Column="0"
 					   Padding="{Binding #DateBox.Bounds.Height, Converter={StaticResource ThicknessSelector}, ConverterParameter='r,10,6,6,5'}"
@@ -67,6 +67,14 @@
 					                     ClockIdentifier="24HourClock"/>
 				</Flyout>
 			</Button.Flyout>
+		</Button>
+
+		<Button Grid.Column="2"
+		        Margin="10,0,0,0" Padding="7.5"
+		        VerticalAlignment="Stretch"
+		        Height="{Binding Bounds.Height}"
+		        Tapped="OnRefreshTimeTapped">
+			<fi:FluentIcon Icon="ArrowClockwise20Regular"/>
 		</Button>
 	</Grid>
 </UserControl>

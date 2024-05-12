@@ -11,6 +11,8 @@ using Avalonia.Styling;
 using Google.Protobuf.WellKnownTypes;
 using TimeKeep.App.Events;
 using TimeKeep.App.Services;
+using TimeKeep.App.ViewModels;
+using TimeKeep.App.Views;
 using TimeKeep.RPC.Entries;
 
 namespace TimeKeep.App.Controls;
@@ -85,7 +87,7 @@ public partial class EntryDisplay : UserControl
         PullGestureRecognizer.IsEnabled = false;
     }
 
-    private async void AnimateClose(TranslateTransform transform)
+	private async void AnimateClose(TranslateTransform transform)
     {
         var animation = new Animation
         {
@@ -138,12 +140,21 @@ public partial class EntryDisplay : UserControl
     #endregion
 
     private void OnEditClick(object? sender, RoutedEventArgs e)
-    {
-        if (Display.RenderTransform is TranslateTransform transform)
+	{
+		if (DataContext is not Entry entry)
+		{
+			ShowErrorMessage("No entry");
+			return;
+		}
+
+        RaiseEvent(new NavigateEventArgs
         {
-            AnimateClose(transform);
-        }
-    }
+            Destination = typeof(EditEntryView),
+            Arguments = [entry],
+            RoutedEvent = Navigation.NavigateEvent,
+            Source = this,
+        });
+	}
 
     #region Destroy
 

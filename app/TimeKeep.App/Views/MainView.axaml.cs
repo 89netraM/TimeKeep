@@ -9,7 +9,7 @@ namespace TimeKeep.App.Views;
 
 public partial class MainView : UserControl
 {
-    private readonly Stack<Type> navigationStack = new();
+    private readonly Stack<(Type, object?[]?)> navigationStack = new([(typeof(EntriesView), null)]);
 
 	public MainView()
 	{
@@ -23,15 +23,17 @@ public partial class MainView : UserControl
 
     private void OnNavigationRequested(object? sender, NavigateEventArgs e)
     {
-        navigationStack.Push(Frame.Content!.GetType());
-        Frame.Content = Activator.CreateInstance(e.Destination);
+        navigationStack.Push((e.Destination, e.Arguments));
+        Frame.Content = Activator.CreateInstance(e.Destination, e.Arguments);
     }
 
     private void OnBackRequested(object? sender, RoutedEventArgs e)
     {
-        if (navigationStack.TryPop(out var dest))
+        if (navigationStack.Count > 1)
         {
-            Frame.Content = Activator.CreateInstance(dest);
+            navigationStack.Pop();
+            var (dest, args) = navigationStack.Peek();
+            Frame.Content = Activator.CreateInstance(dest, args);
         }
     }
 }

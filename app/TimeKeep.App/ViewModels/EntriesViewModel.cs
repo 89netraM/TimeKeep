@@ -23,9 +23,9 @@ public class EntriesViewModel : ViewModelBase, IActivatableViewModel
     public ReactiveCommand<Entry, Unit> DestroyActiveEntryCommand { get; }
     public ReactiveCommand<Entry, Unit> DestroyTodaysEntryCommand { get; }
 
-    public ReactiveCommand<Entry, Unit> EndEntryCommand { get; }
+	public ReactiveCommand<Entry, Unit> EndEntryCommand { get; }
 
-    public ViewModelActivator Activator { get; } = new();
+	public ViewModelActivator Activator { get; } = new();
 
     public EntriesViewModel()
     {
@@ -113,7 +113,7 @@ public class EntriesViewModel : ViewModelBase, IActivatableViewModel
     private void DestroyEntry(ObservableCollection<Entry> entries, Entry entry) =>
         entries.Remove(entry);
 
-    private void EndEntry(Entry entry)
+	private void EndEntry(Entry entry)
     {
         ActiveEntries.Remove(entry);
         AddEntryToCompletedList(entry);
