@@ -32,6 +32,9 @@ public class EditEntryViewModel : ViewModelBase, IActivatableViewModel
 
     public string SaveVerb { get; }
 
+    private readonly Entry? originalEntry;
+    private readonly EditEntryDoneAction doneAction = EditEntryDoneAction.Create;
+
     [Reactive]
     public DateTimeOffset StartTime { get; set; } = DateTimeOffset.Now;
 
@@ -51,12 +54,24 @@ public class EditEntryViewModel : ViewModelBase, IActivatableViewModel
 
     public ReactiveCommand<string, Unit> AddCategoryCommand;
 
-    public ReactiveCommand<Unit, EditEntryResult> AddEntryCommand;
+    public ReactiveCommand<Unit, EditEntryResult> DoneCommand;
 
-    public EditEntryViewModel(EditEntryTitleText titleText, EditEntrySaveVerb saveVerb)
-    {
-        Title = titleText.Title;
-        SaveVerb = saveVerb.Verb;
+    public EditEntryViewModel(Entry? entry)
+	{
+		Title = "New Entry";
+		SaveVerb = "Add";
+
+		if (entry is not null)
+        {
+			Title = "Edit Entry";
+			SaveVerb = "Save";
+            originalEntry = entry;
+            doneAction = EditEntryDoneAction.Save;
+
+			StartTime = entry.Start.ToDateTimeOffset().ToLocalTime();
+            EndTime = entry.End?.ToDateTimeOffset().ToLocalTime();
+            Categories = [.. entry.Categories];
+        }
 
         this.WhenActivated(OnActivation);
 
@@ -66,7 +81,7 @@ public class EditEntryViewModel : ViewModelBase, IActivatableViewModel
         Categories.CollectionChanged += OnCategoriesCollectionChanged;
         AddCategoryCommand = ReactiveCommand.Create<string>(AddCategory);
 
-        AddEntryCommand = ReactiveCommand.CreateFromTask(AddEntry);
+        DoneCommand = ReactiveCommand.CreateFromTask(Done);
     }
 
     private void OnActivation(CompositeDisposable disposables)
@@ -91,7 +106,10 @@ public class EditEntryViewModel : ViewModelBase, IActivatableViewModel
         var response = client.List(new CategoryListRequest { Order = CategoryOrder.EntriesAsc }, cancellationToken: ct);
         await foreach (var category in response.ResponseStream.ReadAllAsync(ct))
         {
-            ExistingCategories.Add(category.Name);
+            if (!Categories.Contains(category.Name))
+			{
+				ExistingCategories.Add(category.Name);
+			}
         }
     }
 
@@ -124,7 +142,8 @@ public class EditEntryViewModel : ViewModelBase, IActivatableViewModel
         {
             Locations.Add(location);
         }
-    }
+        SelectedLocation = originalEntry?.Location;
+	}
 
     private void OnCategoriesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
@@ -177,9 +196,62 @@ public class EditEntryViewModel : ViewModelBase, IActivatableViewModel
         {
             AddCategory(category);
         }
-    }
+	}
 
-    private async Task<EditEntryResult> AddEntry(CancellationToken ct)
+    private Task<EditEntryResult> Done(CancellationToken ct) => doneAction switch
+    {
+        EditEntryDoneAction.Create => AddEntry(ct),
+        EditEntryDoneAction.Save => SaveEntry(ct),
+        _ => Task.FromResult((EditEntryResult)new EditEntryFailure($"Action not available: {doneAction}")),
+	};
+
+	private async Task<EditEntryResult> AddEntry(CancellationToken ct)
+	{
+		try
+		{
+			var client = await RpcClientFactory.EntriesClient;
+			if (client is null)
+			{
+				return new EditEntryFailure("No entry client");
+			}
+
+			var request = new CreateRequest
+			{
+				Start = StartTime.ToUniversalTime().ToTimestamp(),
+			};
+			if (EndTime is DateTimeOffset endTime)
+			{
+				request.End = endTime.ToUniversalTime().ToTimestamp();
+			}
+			if (SelectedProject is not null)
+			{
+				request.Project = SelectedProject.Name;
+			}
+			request.Categories.AddRange(Categories);
+			if (SelectedLocation is not null)
+			{
+				request.LocationId = SelectedLocation.Id;
+			}
+
+			var response = await client.CreateAsync(request, cancellationToken: ct);
+
+			return response.Status switch
+			{
+				CreateStatus.Failure => new EditEntryFailure("Failed (???)"),
+				CreateStatus.Success => new EditEntrySuccess(),
+				CreateStatus.ProjectNotFound => new EditEntryFailure($"The given project ({SelectedProject?.Name}) could not be found."),
+				CreateStatus.CategoryNotFound => new EditEntryFailure("One of the categories could not be found."),
+				CreateStatus.LocationNotFound => new EditEntryFailure("The given location () could not be found."),
+				var code => new EditEntryFailure($"Unknown response code: {code}"),
+			};
+		}
+		catch (Exception e)
+		{
+			return new EditEntryFailure("Something went wrong:\n" + e.Message);
+		}
+	}
+
+	private async Task<EditEntryResult> SaveEntry(CancellationToken ct)
     {
         try
         {
@@ -189,40 +261,59 @@ public class EditEntryViewModel : ViewModelBase, IActivatableViewModel
                 return new EditEntryFailure("No entry client");
             }
 
-            var request = new CreateRequest
+            var saveRequest = new CreateRequest
             {
                 Start = StartTime.ToUniversalTime().ToTimestamp(),
             };
             if (EndTime is DateTimeOffset endTime)
             {
-                request.End = endTime.ToUniversalTime().ToTimestamp();
+                saveRequest.End = endTime.ToUniversalTime().ToTimestamp();
             }
             if (SelectedProject is not null)
             {
-                request.Project = SelectedProject.Name;
+                saveRequest.Project = SelectedProject.Name;
             }
-            request.Categories.AddRange(Categories);
+            saveRequest.Categories.AddRange(Categories);
             if (SelectedLocation is not null)
             {
-                request.LocationId = SelectedLocation.Id;
+                saveRequest.LocationId = SelectedLocation.Id;
             }
 
-            var response = await client.CreateAsync(request, cancellationToken: ct);
+            var createResponse = await client.CreateAsync(saveRequest, cancellationToken: ct);
 
-            return response.Status switch
+            switch (createResponse.Status)
             {
-                CreateStatus.Failure => new EditEntryFailure("Failed (???)"),
-                CreateStatus.Success => new EditEntrySuccess(),
-                CreateStatus.ProjectNotFound => new EditEntryFailure($"The given project ({SelectedProject?.Name}) could not be found."),
-                CreateStatus.CategoryNotFound => new EditEntryFailure("One of the categories could not be found."),
-                CreateStatus.LocationNotFound => new EditEntryFailure("The given location () could not be found."),
-                var code => new EditEntryFailure($"Unknown response code: {code}"),
+                case CreateStatus.Failure: return new EditEntryFailure("Failed (???)");
+                case CreateStatus.Success: break;
+                case CreateStatus.ProjectNotFound: return new EditEntryFailure($"The given project ({SelectedProject?.Name}) could not be found.");
+                case CreateStatus.CategoryNotFound: return new EditEntryFailure("One of the categories could not be found.");
+                case CreateStatus.LocationNotFound: return new EditEntryFailure("The given location () could not be found.");
+                case var code: return new EditEntryFailure($"Unknown response code: {code}");
+            }
+
+            var destroyRequest = new DestroyRequest
+            {
+                Id = originalEntry!.Id,
             };
-        }
+            var destroyResponse = await client.DestroyAsync(destroyRequest, cancellationToken: ct);
+			return destroyResponse.Status switch
+			{
+				DestroyStatus.Failure => new EditEntryFailure("Failed (???)"),
+				DestroyStatus.Success => new EditEntrySuccess(),
+                DestroyStatus.EntryNotFound => new EditEntryFailure("The original entry could not be found."),
+				var code => new EditEntryFailure($"Unknown response code: {code}"),
+			};
+		}
         catch (Exception e)
         {
             return new EditEntryFailure("Something went wrong:\n" + e.Message);
         }
+    }
+
+    private enum EditEntryDoneAction
+    {
+        Create,
+        Save,
     }
 }
 
@@ -231,7 +322,3 @@ public abstract record EditEntryResult;
 public record EditEntrySuccess : EditEntryResult;
 
 public record EditEntryFailure(string Message) : EditEntryResult;
-
-public record EditEntryTitleText(string Title);
-
-public record EditEntrySaveVerb(string Verb);

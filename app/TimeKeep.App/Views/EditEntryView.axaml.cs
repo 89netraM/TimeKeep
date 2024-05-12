@@ -7,14 +7,15 @@ using Avalonia.Interactivity;
 using Avalonia.ReactiveUI;
 using TimeKeep.App.Events;
 using TimeKeep.App.ViewModels;
+using TimeKeep.RPC.Entries;
 
 namespace TimeKeep.App.Views;
 
 public partial class EditEntryView : ReactiveUserControl<EditEntryViewModel>
 {
-    public EditEntryView(EditEntryTitleText titleText, EditEntrySaveVerb saveVerb)
+    public EditEntryView(Entry? entry)
     {
-        DataContext = ViewModel = new EditEntryViewModel(titleText, saveVerb);
+        DataContext = ViewModel = new EditEntryViewModel(entry);
 
         InitializeComponent();
     }
@@ -66,9 +67,9 @@ public partial class EditEntryView : ReactiveUserControl<EditEntryViewModel>
         }
     }
 
-    private async void OnAddClick(object? sender, RoutedEventArgs e)
+    private async void OnDoneClick(object? sender, RoutedEventArgs e)
     {
-        var result = await ViewModel!.AddEntryCommand
+        var result = await ViewModel!.DoneCommand
             .Execute()
             .ToTask();
 

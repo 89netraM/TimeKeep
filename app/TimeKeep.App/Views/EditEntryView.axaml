@@ -103,7 +103,7 @@
 		            Spacing="10">
 			<Button Classes="accent"
 			        Content="{Binding SaveVerb}"
-			        Click="OnAddClick"/>
+			        Click="OnDoneClick"/>
 			<Button Content="Cancel"
 			        Click="OnCancelClick"/>
 		</StackPanel>
