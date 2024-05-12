@@ -49,7 +49,8 @@ public partial class EntriesView : ReactiveUserControl<EntriesViewModel>
     {
         RaiseEvent(new NavigateEventArgs
         {
-            Destination = typeof(AddEntryView),
+            Destination = typeof(EditEntryView),
+            Arguments = [new EditEntryTitleText("New Entry"), new EditEntrySaveVerb("Add")],
             RoutedEvent = Navigation.NavigateEvent,
             Source = this,
         });

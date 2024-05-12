@@ -27,13 +27,4 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\rpc\TimeKeep.RPC.csproj" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Views\AddCategoryView.axaml.cs">
-	    <DependentUpon>AddCategoryView.axaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\AddProjectView.axaml.cs">
-	    <DependentUpon>AddProjectView.axaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
 </Project>
