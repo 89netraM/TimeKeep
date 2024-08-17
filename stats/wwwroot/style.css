@@ -1,0 +1,23 @@
+table {
+	font-size: 15px;
+
+	thead th {
+		writing-mode: tb;
+		text-orientation: mixed;
+		text-align: end;
+	}
+
+	td {
+		height: 1.5em;
+
+		&::before {
+			background-color: hsl(from var(--table-color) h s l / var(--time-spent));
+			content: "";
+			height: 100%;
+			aspect-ratio: 1;
+			display: block;
+			border-radius: 25%;
+			outline: 1px solid black;
+		}
+	}
+}

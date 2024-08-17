@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeKeep.App", "TimeKeep.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeKeep.Common", "common\TimeKeep.Common.csproj", "{6CED5B1B-65DC-4BBA-9779-C3402F32A863}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeKeep.Stats", "stats\TimeKeep.Stats.csproj", "{9B8CA094-2D26-4C97-8CF0-265F3712A280}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,18 @@ Global
 		{6CED5B1B-65DC-4BBA-9779-C3402F32A863}.Release|ARM32.Build.0 = Release|Any CPU
 		{6CED5B1B-65DC-4BBA-9779-C3402F32A863}.Release|ARM64.ActiveCfg = Release|Any CPU
 		{6CED5B1B-65DC-4BBA-9779-C3402F32A863}.Release|ARM64.Build.0 = Release|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Release|ARM32.Build.0 = Release|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{9B8CA094-2D26-4C97-8CF0-265F3712A280}.Release|ARM64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

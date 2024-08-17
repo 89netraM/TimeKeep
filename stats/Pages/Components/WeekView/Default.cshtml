@@ -1,0 +1,97 @@
+﻿@model (int, Dictionary<DateOnly, Week>)
+@using System.Globalization
+@using Humanizer
+@using Humanizer.Localisation
+@using TimeKeep.Stats.Services
+
+@{
+	var (hue, weeks) = Model;
+	if (weeks.Count is 0)
+	{
+		return;
+	}
+	var maxTimeSpent = weeks.Max(p => p.Value.Max);
+}
+
+<table style="--table-color: hsl(@hue 64% 59%)">
+	<thead>
+		<tr>
+			<th></th>
+			@{
+				int? prevMonth = null;
+			}
+			@foreach (var (date, _) in weeks)
+			{
+				var weekEndDate = date.AddDays(6);
+				var month = weekEndDate.Month;
+				if (month != prevMonth)
+				{
+					<th>
+						@if (month == 1 || prevMonth is null)
+						{
+							@(weekEndDate.ToString("yyyy"))
+						}
+						@(weekEndDate.ToString("MMM"))
+					</th>
+				}
+				else
+				{
+					<th></th>
+				}
+
+				prevMonth = month;
+			}
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>Mon</th>
+			@foreach (var (_, week) in weeks)
+			{
+				<td style="--time-spent: @((week.Monday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Monday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
+			}
+		</tr>
+		<tr>
+			<th>Tue</th>
+			@foreach (var (_, week) in weeks)
+			{
+				<td style="--time-spent: @((week.Tuesday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Tuesday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
+			}
+		</tr>
+		<tr>
+			<th>Wed</th>
+			@foreach (var (_, week) in weeks)
+			{
+				<td style="--time-spent: @((week.Wednesday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Wednesday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
+			}
+		</tr>
+		<tr>
+			<th>Thu</th>
+			@foreach (var (_, week) in weeks)
+			{
+				<td style="--time-spent: @((week.Thursday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Thursday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
+			}
+		</tr>
+		<tr>
+			<th>Fri</th>
+			@foreach (var (_, week) in weeks)
+			{
+				<td style="--time-spent: @((week.Friday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Friday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
+			}
+		</tr>
+		<tr>
+			<th>Sun</th>
+			@foreach (var (_, week) in weeks)
+			{
+				<td style="--time-spent: @((week.Saturday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Saturday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
+			}
+		</tr>
+		<tr>
+			<th>Sat</th>
+			@foreach (var (_, week) in weeks)
+			{
+				<td style="--time-spent: @((week.Sunday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Sunday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
+			}
+		</tr>
+	</tbody>
+</table>

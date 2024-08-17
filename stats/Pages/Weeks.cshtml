@@ -1,0 +1,36 @@
+﻿@page "/weeks"
+@namespace TimeKeep.Stats.Pages
+@using Grpc.Core
+@using TimeKeep.RPC.Categories
+@inject CategoriesService.CategoriesServiceClient categoriesClient
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Weeks</title>
+		<link href="./style.css" rel="stylesheet">
+	</head>
+	<body>
+		@if (Request.Query.TryGetValue("categories", out var categories))
+		{
+			@await Component.InvokeAsync("WeekView", new { categories = categories.ToArray(), cancellationToken = HttpContext.RequestAborted })
+		}
+		<br />
+		<form>
+			<input name="categories" type="search" list="validCategories" required placeholder="Categories" value="@(categories)">
+			<datalist id="validCategories">
+			@{
+				var response = categoriesClient.List(new(), cancellationToken: HttpContext.RequestAborted);
+				var validCategories = await response.ResponseStream.ReadAllAsync().ToArrayAsync();
+			}
+			@foreach (var category in validCategories)
+			{
+					<option value="@(category.Name)"></option>
+			}
+			</datalist>
+			<input type="submit" value="Show">
+		</form>
+	</body>
+</html>
