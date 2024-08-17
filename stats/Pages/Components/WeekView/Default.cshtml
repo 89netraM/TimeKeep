@@ -80,14 +80,14 @@
 			}
 		</tr>
 		<tr>
-			<th>Sun</th>
+			<th>Sat</th>
 			@foreach (var (_, week) in weeks)
 			{
 				<td style="--time-spent: @((week.Saturday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Saturday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
 			}
 		</tr>
 		<tr>
-			<th>Sat</th>
+			<th>Sun</th>
 			@foreach (var (_, week) in weeks)
 			{
 				<td style="--time-spent: @((week.Sunday / maxTimeSpent).ToString("0.00000", NumberFormatInfo.InvariantInfo))" title="@(week.Sunday.Humanize(precision: 2, minUnit: TimeUnit.Minute))"></td>
