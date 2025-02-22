@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
-using System.Reactive.Disposables;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using TimeKeep.App.Services;
 using TimeKeep.RPC.Entries;
 
@@ -19,6 +19,12 @@ public class EntriesViewModel : ViewModelBase, IActivatableViewModel
 
     public ObservableCollection<Entry> ActiveEntries { get; } = new();
     public ObservableCollection<Entry> TodaysEntries { get; } = new();
+
+    [Reactive]
+    public TimeSpan TotalWorkTime { get; private set; } = TimeSpan.Zero;
+
+    [Reactive]
+    public DateTime? GoHomeTime { get; private set; }
 
     public ReactiveCommand<Entry, Unit> DestroyActiveEntryCommand { get; }
     public ReactiveCommand<Entry, Unit> DestroyTodaysEntryCommand { get; }
@@ -56,10 +62,18 @@ public class EntriesViewModel : ViewModelBase, IActivatableViewModel
 
     private async Task LoadEntries(EntriesService.EntriesServiceClient client, CancellationToken ct)
     {
-        var today = DateTime.Today.ToUniversalTime().ToTimestamp();
-        using var request = client.List(new ListRequest { After = today }, cancellationToken: ct);
+        var now = DateTime.Now;
+        var today = now.Date;
+        var duration = new Common.Duration();
+
+        using var request = client.List(
+            new ListRequest { After = today.ToUniversalTime().ToTimestamp(), },
+            cancellationToken: ct
+        );
+
         Clear(ActiveEntries);
         Clear(TodaysEntries);
+
         await foreach (var entry in request.ResponseStream.ReadAllAsync(ct))
         {
             if (entry.End is null)
@@ -70,11 +84,24 @@ public class EntriesViewModel : ViewModelBase, IActivatableViewModel
             {
                 TodaysEntries.Add(entry);
             }
+
+            if (entry.Categories.Contains("work"))
+            {
+                var start = entry.Start.ToDateTimeOffset().LocalDateTime;
+                duration.AddInterval(
+                    start < today ? today : start,
+                    entry.End?.ToDateTimeOffset().LocalDateTime ?? now
+                );
+            }
+
             if (ct.IsCancellationRequested)
             {
-                return;
+                break;
             }
         }
+
+        TotalWorkTime = duration.TotalDuration;
+        GoHomeTime = now + TimeSpan.FromHours(8) - duration.TotalDuration;
     }
 
     private static void Clear<T>(ObservableCollection<T> collection)

@@ -26,5 +26,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\rpc\TimeKeep.RPC.csproj" />
+	  <ProjectReference Include="..\..\common\TimeKeep.Common.csproj" />
 	</ItemGroup>
 </Project>

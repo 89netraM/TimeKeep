@@ -2,12 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="using:TimeKeep.App.Converters"
              xmlns:c="using:TimeKeep.App.Controls"
              xmlns:vm="using:TimeKeep.App.ViewModels"
              xmlns:fi="using:FluentAvalonia.FluentIcons"
              mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="600"
              x:Class="TimeKeep.App.Views.EntriesView"
              x:DataType="vm:EntriesViewModel">
+	<UserControl.Resources>
+		<converters:TimeSpanConverter x:Key="TimeSpanConverter"/>
+		<converters:DateTimeConverter x:Key="DateTimeConverter"/>
+	</UserControl.Resources>
 	<UserControl.Styles>
 		<Style Selector="Panel#ButtonHolder Button">
 			<Setter Property="HorizontalAlignment" Value="Right"/>
@@ -65,6 +70,24 @@
 		<RefreshContainer x:Name="RefreshContainer" PullDirection="TopToBottom" TemplateApplied="OnRefreshContainerTemplateApplied" RefreshRequested="OnRefreshRequested">
 			<ScrollViewer>
 				<StackPanel>
+					<Border Classes="separator">
+						<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto,20,Auto,*" Margin="20,10">
+							<TextBlock Grid.Row="0" Grid.Column="1" Classes="h1"
+							           HorizontalAlignment="Stretch" TextAlignment="Center"
+							           Text="{Binding TotalWorkTime, Converter={StaticResource TimeSpanConverter}}"/>
+							<TextBlock Grid.Row="1" Grid.Column="1"
+							           HorizontalAlignment="Stretch" TextAlignment="Center"
+							           Text="Time Worked"/>
+							<TextBlock Grid.Row="0" Grid.Column="3" Classes="h1"
+							           HorizontalAlignment="Stretch" TextAlignment="Center"
+							           IsVisible="{Binding !!GoHomeTime}"
+							           Text="{Binding GoHomeTime, Converter={StaticResource DateTimeConverter}}"/>
+							<TextBlock Grid.Row="1" Grid.Column="3"
+							           HorizontalAlignment="Stretch" TextAlignment="Center"
+							           Text="Go Home Time"/>
+						</Grid>
+					</Border>
+
 					<Border Classes="separator">
 						<TextBlock Margin="20,10"
 						           Classes="h1"
@@ -155,7 +178,7 @@
 			</Panel>
 
 			<Button Classes="main"
-					Click="OnAddEntryButtonClick"
+			        Click="OnAddEntryButtonClick"
 			        ContextRequested="OnAddEntryButtonContextRequested">
 				<fi:FluentIcon Icon="Add20Regular"/>
 			</Button>
