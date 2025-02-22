@@ -2,6 +2,7 @@ using System;
 using System.Reactive;
 using System.Reactive.Linq;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.ReactiveUI;
@@ -18,6 +19,11 @@ public partial class EntriesView : ReactiveUserControl<EntriesViewModel>
         DataContext = ViewModel = new EntriesViewModel();
 
         InitializeComponent();
+    }
+
+    private void OnRefreshContainerTemplateApplied(object? sender, TemplateAppliedEventArgs e)
+    {
+        RefreshContainer.RequestRefresh();
     }
 
     private void OnRefreshRequested(object? sender, RefreshRequestedEventArgs e)

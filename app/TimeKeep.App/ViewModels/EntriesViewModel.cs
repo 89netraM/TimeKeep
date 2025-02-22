@@ -29,22 +29,12 @@ public class EntriesViewModel : ViewModelBase, IActivatableViewModel
 
     public EntriesViewModel()
     {
-        this.WhenActivated(OnActivation);
-
         RefreshCommand = ReactiveCommand.CreateFromTask(Refresh);
 
         DestroyActiveEntryCommand = ReactiveCommand.Create<Entry>(DestroyActiveEntry);
         DestroyTodaysEntryCommand = ReactiveCommand.Create<Entry>(DestroyTodaysEntry);
 
         EndEntryCommand = ReactiveCommand.Create<Entry>(EndEntry);
-    }
-
-    private void OnActivation(CompositeDisposable disposables)
-    {
-        cancellationTokenSource = new CancellationTokenSource();
-        Disposable.Create(cancellationTokenSource.Cancel).DisposeWith(disposables);
-        cancellationTokenSource.DisposeWith(disposables);
-        LoadEntries(cancellationTokenSource.Token).DisposeWith(disposables);
     }
 
     private async Task Refresh(CancellationToken ct)

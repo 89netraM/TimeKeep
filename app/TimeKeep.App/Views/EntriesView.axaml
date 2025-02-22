@@ -62,7 +62,7 @@
 	</UserControl.Styles>
 
 	<Panel>
-		<RefreshContainer PullDirection="TopToBottom" RefreshRequested="OnRefreshRequested">
+		<RefreshContainer x:Name="RefreshContainer" PullDirection="TopToBottom" TemplateApplied="OnRefreshContainerTemplateApplied" RefreshRequested="OnRefreshRequested">
 			<ScrollViewer>
 				<StackPanel>
 					<Border Classes="separator">
