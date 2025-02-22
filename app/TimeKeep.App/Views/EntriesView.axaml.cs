@@ -84,6 +84,7 @@ public partial class EntriesView : ReactiveUserControl<EntriesViewModel>
 
     private void OnAddEntryButtonContextRequested(object? sender, ContextRequestedEventArgs e)
     {
+        e.Handled = true;
         ButtonHolder.Classes.Add("active");
     }
 
