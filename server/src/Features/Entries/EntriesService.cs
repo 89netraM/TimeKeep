@@ -72,7 +72,7 @@ public class EntriesService
 		if (listRequest.After is not null)
 		{
 			var after = listRequest.After.ToDateTime();
-			query = query.Where(entry => after < entry.Start);
+			query = query.Where(entry => entry.End == null || after < entry.End);
 		}
 		if (listRequest.Before is not null)
 		{

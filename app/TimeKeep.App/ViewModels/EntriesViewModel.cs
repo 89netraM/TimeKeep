@@ -61,40 +61,29 @@ public class EntriesViewModel : ViewModelBase, IActivatableViewModel
         {
             return;
         }
-        await LoadActiveEntries(client, ct);
-        if (ct.IsCancellationRequested)
-        {
-            return;
-        }
-        await LoadTodaysEntries(client, ct);
+        await LoadEntries(client, ct);
     }
 
-    private async Task LoadActiveEntries(EntriesService.EntriesServiceClient client, CancellationToken ct)
-    {
-        using var request = client.List(new ListRequest { EndStatus = EndStatus.OnlyActive }, cancellationToken: ct);
-        Clear(ActiveEntries);
-        await foreach (var entry in request.ResponseStream.ReadAllAsync(ct))
-        {
-            if (ct.IsCancellationRequested)
-            {
-                return;
-            }
-            ActiveEntries.Add(entry);
-        }
-    }
-
-    private async Task LoadTodaysEntries(EntriesService.EntriesServiceClient client, CancellationToken ct)
+    private async Task LoadEntries(EntriesService.EntriesServiceClient client, CancellationToken ct)
     {
         var today = DateTime.Today.ToUniversalTime().ToTimestamp();
-        using var request = client.List(new ListRequest { After = today, EndStatus = EndStatus.OnlyCompleted }, cancellationToken: ct);
+        using var request = client.List(new ListRequest { After = today }, cancellationToken: ct);
+        Clear(ActiveEntries);
         Clear(TodaysEntries);
         await foreach (var entry in request.ResponseStream.ReadAllAsync(ct))
         {
+            if (entry.End is null)
+            {
+                ActiveEntries.Add(entry);
+            }
+            else
+            {
+                TodaysEntries.Add(entry);
+            }
             if (ct.IsCancellationRequested)
             {
                 return;
             }
-            TodaysEntries.Add(entry);
         }
     }
 
