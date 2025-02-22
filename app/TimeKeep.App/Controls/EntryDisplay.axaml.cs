@@ -30,8 +30,8 @@ public partial class EntryDisplay : UserControl
         element.AddHandler(EntryDestroyedEvent, handler);
     }
 
-    public static readonly RoutedEvent<EntryDestroyedEventArgs> EntryEndedEvent =
-        RoutedEvent.Register<EntryDestroyedEventArgs>(
+    public static readonly RoutedEvent<EntryEndedEventArgs> EntryEndedEvent =
+        RoutedEvent.Register<EntryEndedEventArgs>(
             "EntryEnded", RoutingStrategies.Bubble, typeof(EntryDisplay));
 
     public static void AddEntryEndedHandler(Control element, EventHandler<EntryEndedEventArgs> handler)
