@@ -11,14 +11,18 @@
       <button command="show-modal" commandfor="settingsDialog">⚙️</button>
     </nav>
     <button id="addButton">➕</button>
+    <ul id="newButtons" popover>
+      <li><button command="show-modal" commandfor="newCategoryDialog">New Category 📁</button></li>
+      <li><button command="show-modal" commandfor="newProjectDialog">New Project 🗃️</button></li>
+    </ul>
     <dialog id="settingsDialog" closedby="any">
-      <form id="settingsForm" method="dialog">
+      <form method="dialog">
         <h1>Settings</h1>
         <label>
           <span>Token:</span>
           <input id="token" type="password" placeholder="Token">
         </label>
-        <button type="submit">Save</button>
+        <button type="submit" value="save">Save</button>
       </form>
     </dialog>
     <dialog id="entryDialog" closedby="any">
@@ -43,7 +47,6 @@
             <input id="categoryInput" list="allCategories">
             <button id="addCategoryButton">+</button>
           </span>
-          <datalist id="allCategories"></datalist>
         </label>
         <label>
           <span>Location:</span>
@@ -52,6 +55,35 @@
         <button type="submit" value="save">Save</button>
       </form>
     </dialog>
+    <dialog id="newCategoryDialog" closedby="any">
+      <form method="dialog">
+        <h1>New Category</h1>
+        <label>
+          <span>Category:</span>
+          <input id="category" type="text" required>
+        </label>
+        <button type="submit" value="save">Save</button>
+      </form>
+    </dialog>
+    <dialog id="newProjectDialog" closedby="any">
+      <form method="dialog">
+        <h1>New Project</h1>
+        <label>
+          <span>Project:</span>
+          <input id="newProject" type="text" required>
+        </label>
+        <label>
+          <span>Categories:</span>
+          <span id="newProjectCategories"></span>
+          <span>
+            <input id="newProjectCategoryInput" list="allCategories">
+            <button id="newProjectAddCategoryButton">+</button>
+          </span>
+        </label>
+        <button type="submit" value="save">Save</button>
+      </form>
+    </dialog>
+    <datalist id="allCategories"></datalist>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

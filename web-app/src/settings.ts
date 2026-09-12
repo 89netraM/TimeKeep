@@ -1,12 +1,31 @@
-declare const settingsForm: HTMLFormElement;
+declare const settingsDialog: HTMLDialogElement;
 const tokenKey = "token" as const;
 declare const token: HTMLInputElement;
 
 window.addEventListener(
     "load",
     () => {
-        settingsForm.addEventListener("submit", () => localStorage.setItem(tokenKey, token.value));
-        token.value = localStorage.getItem(tokenKey) ?? "";
+        settingsDialog.addEventListener(
+            "beforetoggle",
+            e => {
+                if (e.newState !== "open") {
+                    return;
+                }
+
+                token.value = Settings.token ?? "";
+                settingsDialog.returnValue = "close";
+            },
+        )
+        settingsDialog.addEventListener(
+            "close",
+            () => {
+                if (settingsDialog.returnValue !== "save") {
+                    return;
+                }
+
+                localStorage.setItem(tokenKey, token.value);
+            },
+        );
     },
 );
 

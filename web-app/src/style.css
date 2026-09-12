@@ -75,7 +75,7 @@ nav {
   }
 }
 
-dialog {
+dialog:not([popover]) {
   border: 1px var(--accent-border) solid;
   background-color: var(--accent-bg);
 
@@ -164,7 +164,25 @@ select {
   bottom: 1rem;
 }
 
-#categories {
+#newButtons {
+  border: none;
+  background: none;
+  margin: 0;
+  inset: auto;
+  position: fixed;
+  right: 0.75rem;
+  bottom: 4rem;
+  text-align: end;
+
+  button {
+    border: none;
+    font-size: 1.125rem;
+    margin-block-start: 0.5rem;
+    color: var(--text);
+  }
+}
+
+#categories, #newProjectCategories {
   &:has(*) {
     margin-block: 0.25rem;
     display: flex;
@@ -181,7 +199,7 @@ select {
   }
 }
 
-span:has(> #categoryInput) {
+span:has(> #categoryInput, > #newProjectCategoryInput) {
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-areas: "input button";
