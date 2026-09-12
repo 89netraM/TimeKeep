@@ -1,13 +1,18 @@
 import "./style.css";
+import { EntryEditor } from "./entryEditor";
+import "./settings";
 
-declare const settingsForm: HTMLFormElement;
-const tokenKey = "token" as const;
-declare const token: HTMLInputElement;
+declare const addButton: HTMLButtonElement;
 
 window.addEventListener(
     "load",
     () => {
-        settingsForm.addEventListener("submit", () => localStorage.setItem(tokenKey, token.value));
-        token.value = localStorage.getItem(tokenKey) ?? "";
-    },
+        addButton.addEventListener(
+            "click",
+            async () => {
+                const entryCreateRequest = await EntryEditor.openNew()
+                console.log({ entryCreateRequest });
+            }
+        );
+    }
 );

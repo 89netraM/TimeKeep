@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>TimeKeep</title>
   </head>
   <body>
@@ -10,6 +10,7 @@
       <h1>TimeKeep</h1>
       <button command="show-modal" commandfor="settingsDialog">⚙️</button>
     </nav>
+    <button id="addButton">➕</button>
     <dialog id="settingsDialog" closedby="any">
       <form id="settingsForm" method="dialog">
         <h1>Settings</h1>
@@ -18,6 +19,37 @@
           <input id="token" type="password" placeholder="Token">
         </label>
         <button type="submit">Save</button>
+      </form>
+    </dialog>
+    <dialog id="entryDialog" closedby="any">
+      <form method="dialog">
+        <h1><span id="entryFormReason">New</span> Entry</h1>
+        <label>
+          <span>Start:</span>
+          <input id="start" type="datetime-local" required>
+        </label>
+        <label for="end">
+          <span>End:</span>
+          <input id="end" type="datetime-local">
+        </label>
+        <label>
+          <span>Project:</span>
+          <select id="project"></select>
+        </label>
+        <label>
+          <span>Categories:</span>
+          <span id="categories"></span>
+          <span>
+            <input id="categoryInput" list="allCategories">
+            <button id="addCategoryButton">+</button>
+          </span>
+          <datalist id="allCategories"></datalist>
+        </label>
+        <label>
+          <span>Location:</span>
+          <select id="location"></select>
+        </label>
+        <button type="submit" value="save">Save</button>
       </form>
     </dialog>
     <script type="module" src="/src/main.ts"></script>

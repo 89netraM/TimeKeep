@@ -62,6 +62,7 @@ nav {
     margin: 0;
     grid-area: title;
     color: var(--text-h);
+    align-self: center;
   }
 
   button {
@@ -70,7 +71,7 @@ nav {
     background: none;
     outline: none;
     grid-area: settings;
-    font-size: 1.25rem;
+    font-size: 2rem;
   }
 }
 
@@ -101,7 +102,8 @@ label {
     display: block;
     color: var(--text);
   }
-  &:focus-within > span {
+
+  &:focus-within>span:first-child {
     color: var(--text-h);
   }
 
@@ -132,5 +134,74 @@ input {
 
   &:focus-within {
     outline: 1px var(--accent) solid;
+  }
+}
+
+select {
+  border: 1px var(--accent-border) solid;
+  border-radius: 2px;
+  background-color: var(--bg);
+  color: var(--text-h);
+  font-size: 0.9rem;
+  width: 100%;
+
+  &:focus-within {
+    outline: 1px var(--accent) solid;
+  }
+
+  option {
+    padding: 0.125rem 0.25rem;
+  }
+}
+
+#addButton {
+  border: none;
+  background: none;
+  font-size: 2rem;
+  padding: 0;
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+}
+
+#categories {
+  &:has(*) {
+    margin-block: 0.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    justify-content: center;
+  }
+
+  span {
+    background-color: var(--accent);
+    color: var(--text-h);
+    border-radius: 0.5rem;
+    padding: 0.125rem 0.25rem;
+  }
+}
+
+span:has(> #categoryInput) {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "input button";
+
+  input {
+    grid-area: input;
+    border-inline-end: none;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  button {
+    grid-area: button;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+
+  &:focus-within {
+    button {
+      outline: 1px var(--accent) solid;
+    }
   }
 }
