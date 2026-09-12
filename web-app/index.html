@@ -6,7 +6,20 @@
     <title>TimeKeep</title>
   </head>
   <body>
-    <h1>TimeKeep</h1>
+    <nav>
+      <h1>TimeKeep</h1>
+      <button command="show-modal" commandfor="settingsDialog">⚙️</button>
+    </nav>
+    <dialog id="settingsDialog" closedby="any">
+      <form id="settingsForm" method="dialog">
+        <h1>Settings</h1>
+        <label>
+          <span>Token:</span>
+          <input id="token" type="password" placeholder="Token">
+        </label>
+        <button type="submit">Save</button>
+      </form>
+    </dialog>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
