@@ -5,7 +5,7 @@
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-bg: #f6ebff;
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
@@ -38,7 +38,7 @@
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
+    --accent-bg: #30283f;
     --accent-border: rgba(192, 132, 252, 0.5);
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
@@ -51,6 +51,9 @@ body {
 }
 
 nav {
+  position: sticky;
+  top: 0px;
+  z-index: 9;
   background-color: var(--accent-bg);
   padding: 1rem;
   display: grid;
@@ -80,6 +83,7 @@ dialog:not([popover]) {
   background-color: var(--accent-bg);
 
   &::backdrop {
+    background: none;
     backdrop-filter: blur(0.25rem);
   }
 
@@ -162,6 +166,7 @@ select {
   position: fixed;
   right: 1rem;
   bottom: 1rem;
+  z-index: 9;
 }
 
 #newButtons {
@@ -182,7 +187,8 @@ select {
   }
 }
 
-#categories, #newProjectCategories {
+#categories,
+#newProjectCategories {
   &:has(*) {
     margin-block: 0.25rem;
     display: flex;
@@ -220,6 +226,70 @@ span:has(> #categoryInput, > #newProjectCategoryInput) {
   &:focus-within {
     button {
       outline: 1px var(--accent) solid;
+    }
+  }
+}
+
+main {
+  >section:first-of-type {
+    display: grid;
+    grid-template:
+      "timeWorked goHomeTime" auto
+      "timeWorkedLabel goHomeTimeLabel" auto
+      / 1fr 1fr;
+    padding-block: 1rem;
+    border-block-end: 1px var(--accent-border) solid;
+
+    >div {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-template-columns: subgrid;
+      justify-items: center;
+
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h2 {
+        font-variant-numeric: tabular-nums;
+        color: var(--text-h);
+      }
+
+      &:has(#timeWorked) {
+        grid-row: timeWorked / timeWorkedLabel;
+        grid-column: timeWorked / timeWorkedLabel;
+
+        #timeWorked {
+          grid-area: timeWorked;
+
+          +p {
+            grid-area: timeWorkedLabel;
+          }
+        }
+      }
+
+      &:has(#goHomeTime) {
+        grid-row: goHomeTime / goHomeTimeLabel;
+        grid-column: goHomeTime / goHomeTimeLabel;
+
+        #goHomeTime {
+          grid-area: goHomeTime;
+
+          +p {
+            grid-area: goHomeTimeLabel;
+          }
+        }
+      }
+    }
+  }
+
+  >section {
+    >h2 {
+      margin: 0;
+      padding: 1rem 1rem;
+      border-block-end: 1px var(--accent-border) solid;
+      color: var(--text-h);
     }
   }
 }

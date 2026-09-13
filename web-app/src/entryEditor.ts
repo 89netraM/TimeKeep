@@ -1,4 +1,5 @@
 import type { Entry, EntryCreateRequest } from "./models";
+import { toLocalISOString } from "./time";
 
 declare const entryDialog: HTMLDialogElement;
 declare const entryFormReason: HTMLSpanElement;
@@ -61,10 +62,10 @@ function open(reason: string, input: Entry | null): Promise<EntryCreateRequest |
             start.value = toLocalISOString(input.start);
             end.value = toLocalISOString(input.end);
             project.value = "";
-            categories.innerHTML = [...input.categories].map(c => `<span>${c}</span>`).join();
+            categories.innerHTML = [...input.categories].map(c => `<span>${c}</span>`).join("");
             location.value = input.location ?? "";
         } else {
-            start.value = "";
+            start.value = toLocalISOString(new Date());
             end.value = "";
             project.value = "";
             categories.innerHTML = "";
@@ -82,23 +83,16 @@ function open(reason: string, input: Entry | null): Promise<EntryCreateRequest |
                     start: new Date(start.value),
                     end: end.value != "" ? new Date(end.value) : null,
                     project: project.value != "" ? project.value : null,
-                    categories: new Set<string>([...categories.querySelectorAll("span")].map(s => s.innerText)),
+                    categories: [...categories.querySelectorAll("span")].map(s => s.innerText),
                     location: location.value != "" ? location.value : null,
                 });
             },
             { once: true },
         );
+        entryDialog.inert = true;
         entryDialog.showModal();
+        entryDialog.inert = false;
     }));
-
-    function toLocalISOString(date: Date | null): string {
-        if (date == null) {
-            return "";
-        }
-        const offsetMs = date.getTimezoneOffset() * 60 * 1000;
-        const localTime = new Date(date.getTime() - offsetMs);
-        return localTime.toISOString().substring(0, 16);
-    }
 }
 
 export class EntryEditor {

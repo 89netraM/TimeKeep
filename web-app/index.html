@@ -15,6 +15,24 @@
       <li><button command="show-modal" commandfor="newCategoryDialog">New Category 📁</button></li>
       <li><button command="show-modal" commandfor="newProjectDialog">New Project 🗃️</button></li>
     </ul>
+    <main>
+      <section>
+        <div>
+          <h2 id="timeWorked">0h 00m</h2>
+          <p>Time Worked</p>
+        </div>
+        <div>
+          <h2 id="goHomeTime">16:00</h2>
+          <p>Go Home Time</p>
+        </div>
+      </section>
+      <section id="active">
+        <h2>Active</h2>
+      </section>
+      <section id="today">
+        <h2>Today</h2>
+      </section>
+    </main>
     <dialog id="settingsDialog" closedby="any">
       <form method="dialog">
         <h1>Settings</h1>
@@ -83,7 +101,134 @@
         <button type="submit" value="save">Save</button>
       </form>
     </dialog>
+    <dialog id="deleteDialog" closedby="any">
+      <form method="dialog">
+        <h1>Delete</h1>
+        <p>Are you sure?</p>
+        <button type="submit" value="delete">Delete</button>
+        <button type="submit" value="cancel">Cancel</button>
+      </form>
+    </dialog>
+    <dialog id="endDialog" closedby="any">
+      <form method="dialog">
+        <h1>End</h1>
+        <label for="end">
+          <span>End:</span>
+          <input id="endEnd" type="datetime-local">
+        </label>
+        <button type="submit" value="end">End</button>
+        <button type="submit" value="cancel">Cancel</button>
+      </form>
+    </dialog>
     <datalist id="allCategories"></datalist>
+    <template id="entryTemplate">
+      <style>
+        #container {
+          overflow: auto hidden;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: none;
+          scroll-snap-type: inline mandatory;
+          position: relative;
+          display: grid;
+          grid-template:
+            "info buttons" auto
+            / 100% auto;
+          border-block-end: 1px var(--accent-border) solid;
+
+          scrollbar-width: none;
+
+          &::-webkit-scrollbar {
+            background: none;
+            width: 0;
+          }
+
+          #top {
+            scroll-snap-align: end;
+            background-color: var(--bg);
+            display: grid;
+            grid-template:
+              "from       dash       to" auto
+              "location   location   location" auto
+              "categories categories categories" auto
+              / 1fr auto 1fr;
+            column-gap: 0.25rem;
+            padding-block: 0.5rem;
+            grid-area: info;
+            position: relative;
+            z-index: 2;
+
+            #from {
+              text-align: end;
+            }
+
+            #from, #to {
+              font-variant-numeric: tabular-nums;
+            }
+
+            #location {
+              text-align: center;
+              grid-area: location;
+            }
+
+            #categories {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 0.25rem;
+              justify-content: center;
+              grid-area: categories;
+
+              &:has(*) {
+                margin-block: 0.25rem;
+              }
+
+              span {
+                background-color: var(--accent);
+                color: var(--text-h);
+                border-radius: 0.5rem;
+                padding: 0.125rem 0.25rem;
+              }
+            }
+          }
+
+          #behind {
+            scroll-snap-align: start;
+            grid-area: buttons;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            position: sticky;
+            right: 0px;
+            z-index: 1;
+
+            button {
+              border: none;
+              background: none;
+              font-size: 1.25rem;
+              position: relative;
+              z-index: 1;
+            }
+          }
+        }
+      </style>
+
+      <div id="container">
+        <div id="top">
+          <span id="from">08:00</span>
+          <span>-</span>
+          <span id="to"></span>
+          <span id="location">home (Norra Gubberogatan 3, lgh 44, 41663 Göteborg)</span>
+          <div id="categories">
+            <span>work</span>
+            <span>volvo</span>
+          </div>
+        </div>
+        <div id="behind">
+          <button id="deleteButton">🗑️</button>
+          <button id="editButton">✏️</button>
+          <button id="endButton">🛑</button>
+        </div>
+      </div>
+    </template>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
