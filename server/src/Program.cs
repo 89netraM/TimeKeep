@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TimeKeep.Api;
 using TimeKeep.Authentication;
 using TimeKeep.Features.Categories;
 using TimeKeep.Features.Entries;
@@ -32,6 +33,10 @@ app.MapGrpcService<CategoriesRPCService>();
 app.MapGrpcService<EntriesRPCService>();
 app.MapGrpcService<ProjectsRPCService>();
 app.MapGrpcService<LocationsRPCService>();
+
+app.MapWebAppApi().RequireAuthorization();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 using (var scope = app.Services.CreateScope())
 {

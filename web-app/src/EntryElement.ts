@@ -1,4 +1,4 @@
-import type { Entry } from "./models";
+import type { Entry, Location } from "./models";
 import { formatDateTime } from "./time";
 
 declare const entryTemplate: HTMLTemplateElement;
@@ -27,7 +27,9 @@ export class EntryElement extends HTMLElement {
                 this.#to.innerText = "";
                 this.#endButton.hidden = false;
             }
-            this.#location.innerText = this.#entry.location ?? "";
+            this.#location.innerText = this.#entry.location != null
+                ? formatLocation(this.#entry.location)
+                : "";
             this.#categories.innerHTML = this.#entry.categories.map(c => `<span>${c}</span>`).join("");
         }
     }
@@ -85,4 +87,17 @@ export class EntryButtonEvent extends PointerEvent {
         super(type, { ...original, bubbles: true });
         this.entry = entry;
     }
+}
+
+function formatLocation(location: Location): string {
+    if (location.name == null && location.address == null) {
+        return location.id;
+    }
+    if (location.name == null) {
+        return location.address!;
+    }
+    if (location.address == null) {
+        return location.name;
+    }
+    return `${location.name} (${location.address})`;
 }

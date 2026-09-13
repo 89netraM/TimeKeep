@@ -63,7 +63,7 @@ function open(reason: string, input: Entry | null): Promise<EntryCreateRequest |
             end.value = toLocalISOString(input.end);
             project.value = "";
             categories.innerHTML = [...input.categories].map(c => `<span>${c}</span>`).join("");
-            location.value = input.location ?? "";
+            location.value = input.location?.id ?? "";
         } else {
             start.value = toLocalISOString(new Date());
             end.value = "";

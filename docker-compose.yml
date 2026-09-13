@@ -10,7 +10,7 @@ services:
       - ConnectionStrings__TimeKeepDatabase=Host=db;Username=user;Password=password;Database=timekeep
       - BearerAuthentication__Token=token
     ports:
-      - 8080:80
+      - 8080:8080
     depends_on:
       - db
 

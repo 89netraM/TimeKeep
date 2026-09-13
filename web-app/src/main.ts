@@ -135,21 +135,21 @@ window.addEventListener(
             id: "9c66ebb6-547c-4752-b302-a86712c3eef6",
             start: new Date(`${date}T11:00:00.000Z`),
             end: null,
-            location: "home",
+            location: { id: "home", name: "home", address: "Norra Gubberogatan 3, lgh 33, 41663 Gothenburg" },
             categories: ["timekeep", "work"],
         });
         addEntryToUi({
             id: "5fd1c236-b5db-4d8d-803e-27f005047c20",
             start: new Date(`${date}T06:00:00.000Z`),
             end: new Date(`${date}T09:00:00.000Z`),
-            location: "home",
+            location: { id: "home", name: "home", address: "Norra Gubberogatan 3, lgh 33, 41663 Gothenburg" },
             categories: ["timekeep", "work"],
         });
         addEntryToUi({
             id: "bc4b5f20-fae5-4376-812b-55a0fc431759",
             start: new Date(`${date}T06:45:00.000Z`),
             end: new Date(`${date}T07:00:00.000Z`),
-            location: "home",
+            location: { id: "home", name: "home", address: "Norra Gubberogatan 3, lgh 33, 41663 Gothenburg" },
             categories: ["meeting", "timekeep", "work"],
         });
 
