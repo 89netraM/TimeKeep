@@ -1,3 +1,4 @@
+import { AlertElement } from "./AlertElement";
 import type { CategoryRequest, Entry, EntryRequest, Init, ProjectRequest } from "./models";
 import { Settings } from "./settings";
 
@@ -120,20 +121,24 @@ function defaultHeaders(token: string): HeadersInit {
 
 async function raiseError(source: string, message: string | Response): Promise<never> {
     if (typeof message === "string") {
-        throw new Error(`${source} error: ${message}`);
+        raiseErrorForReal(`${source} error: ${message}`);
     } else if (message instanceof Response) {
         let remoteMessage;
         try {
             remoteMessage = await message.text();
         } catch (error) {
-            throw new Error(`${source} error: ${error instanceof Error ? error.message : error}`);
+            raiseErrorForReal(`${source} error: ${error instanceof Error ? error.message : error}`);
         }
         if (remoteMessage != null && remoteMessage != "") {
-            throw new Error(`${source} error: ${remoteMessage}`);
+            raiseErrorForReal(`${source} error: ${remoteMessage}`);
         }
-            throw new Error(`${source} error: ${message.statusText}`);
+            raiseErrorForReal(`${source} error: ${message.statusText}`);
     }
-    throw new Error(`${source} error: Unknown`);
+    raiseErrorForReal(`${source} error: Unknown`);
+}
+function raiseErrorForReal(message: string): never {
+    AlertElement.showAlert(message);
+    throw new Error(message);
 }
 
 async function parse<T>(response: Response): Promise<T> {

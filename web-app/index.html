@@ -121,6 +121,7 @@
       </form>
     </dialog>
     <datalist id="allCategories"></datalist>
+    <div id="alerts"></div>
     <template id="entryTemplate">
       <style>
         #container {
@@ -228,6 +229,21 @@
           <button id="endButton">🛑</button>
         </div>
       </div>
+    </template>
+    <template id="alertTemplate">
+      <style>
+        div {
+          background-color: var(--accent-bg);
+          color: var(--text-h);
+          font-family: var(--sans);
+          border-radius: 1rem;
+          border: 1px var(--accent-border) solid;
+          box-shadow: var(--shadow);
+          padding: 1rem;
+          margin-block-start: 1rem;
+        }
+      </style>
+      <div><slot></slot></div>
     </template>
     <script type="module" src="/src/main.ts"></script>
   </body>

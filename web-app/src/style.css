@@ -48,6 +48,7 @@
 
 body {
   margin: 0;
+  anchor-name: --body-anchor;
 }
 
 nav {
@@ -294,4 +295,15 @@ main {
       color: var(--text-h);
     }
   }
+}
+
+#alerts {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  margin: 0px;
+  padding-inline: 4rem;
+  padding-block-end: 1rem;
+  z-index: 2;
 }
