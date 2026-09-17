@@ -1,5 +1,8 @@
+import { createCategory } from "./api";
+
 declare const newCategoryDialog: HTMLDialogElement;
 declare const category: HTMLInputElement;
+declare const allCategories: HTMLInputElement;
 
 window.addEventListener(
     "load",
@@ -17,12 +20,14 @@ window.addEventListener(
         )
         newCategoryDialog.addEventListener(
             "close",
-            () => {
+            async () => {
                 if (newCategoryDialog.returnValue !== "save") {
                     return;
                 }
 
-                console.log("TODO: Make RPC to create category");
+                const categoryName = category.value;
+                await createCategory({ category: categoryName });
+                allCategories.innerHTML += `<option value="${categoryName}">${categoryName}</option>`;
             },
         );
     },

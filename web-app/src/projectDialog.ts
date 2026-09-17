@@ -1,4 +1,7 @@
+import { createProject } from "./api";
+
 declare const newProjectDialog: HTMLDialogElement;
+declare const project: HTMLSelectElement;
 declare const newProject: HTMLSelectElement;
 declare const newProjectCategories: HTMLSpanElement;
 declare const newProjectCategoryInput: HTMLInputElement;
@@ -49,12 +52,17 @@ window.addEventListener(
         )
         newProjectDialog.addEventListener(
             "close",
-            () => {
+            async () => {
                 if (newProjectDialog.returnValue !== "save") {
                     return;
                 }
 
-                console.log("TODO: Make RPC to create project");
+                const projectName = newProject.value;
+                await createProject({
+                    project: projectName,
+                    categories: [...newProjectCategories.querySelectorAll("span")].map(s => s.innerText)
+                });
+                project.innerHTML += `<option value="${projectName}">${projectName}</option>`;
             },
         );
     },

@@ -3,12 +3,13 @@ import "./categoryDialog";
 import "./EntryElement";
 import { EntryEditor } from "./entryEditor";
 import "./projectDialog";
-import "./settings";
+import { Settings } from "./settings";
 import type { EntryElement } from "./EntryElement";
 import type { Entry } from "./models";
 import { formatDateTime } from "./time";
 import { DeleteDialog } from "./deleteDialog";
 import { EndDialog } from "./endDialog";
+import { createEntry, deleteEntry, getInit, updateEntry } from "./api";
 
 declare const addButton: HTMLButtonElement;
 declare const newButtons: HTMLDialogElement;
@@ -17,11 +18,15 @@ declare const today: HTMLDivElement;
 declare const timeWorked: HTMLHeadingElement;
 declare const goHomeTime: HTMLHeadingElement;
 
+declare const allCategories: HTMLDataListElement;
+declare const project: HTMLSelectElement;
+declare const locationInput: HTMLSelectElement;
+
 let updateTimesId: number;
 
 window.addEventListener(
     "load",
-    () => {
+    async () => {
         document.addEventListener("click", e => {
             if (!(e.target instanceof HTMLDialogElement)) {
                 return;
@@ -32,6 +37,10 @@ window.addEventListener(
             }
             e.target.close("close");
         });
+
+        Settings.updateCallback = loadInit;
+        await loadInit();
+
         addButton.addEventListener("click", createNewEntry);
         addButton.addEventListener(
             "touchstart",
@@ -91,7 +100,7 @@ window.addEventListener(
                 if (!deleteConfirmed) {
                     return;
                 }
-                console.log("TODO: Make RPC deleting entry");
+                await deleteEntry(e.entry.id);
                 document.getElementById(e.entry.id)?.remove();
                 updateTimes();
             }
@@ -103,10 +112,10 @@ window.addEventListener(
                 if (entryCreateRequest == null) {
                     return;
                 }
-                console.log("TODO: Make RPC and edit entry");
+                const updatedEntry = await updateEntry(e.entry.id, entryCreateRequest);
                 const element = document.getElementById(e.entry.id) as EntryElement;
                 element.remove();
-                // TODO: Update element.entry based on RPC call
+                element.entry = updatedEntry;
                 insertEntryElement(element);
                 updateTimes();
             }
@@ -118,56 +127,66 @@ window.addEventListener(
                 if (end == null) {
                     return;
                 }
-                console.log("TODO: Make RPC ending entry");
+                const updatedEntry = await updateEntry(
+                    e.entry.id,
+                    {
+                        start: e.entry.start,
+                        end,
+                        project: null,
+                        categories: e.entry.categories,
+                        location: e.entry.location?.id ?? null
+                    }
+                );
                 const element = document.getElementById(e.entry.id) as EntryElement;
                 element.remove();
-                element.entry = {
-                    ...e.entry,
-                    end,
-                };
+                element.entry = updatedEntry;
                 insertEntryElement(element);
                 updateTimes();
             }
         );
-
-        const date = new Date().toISOString().substring(0, 10);
-        addEntryToUi({
-            id: "9c66ebb6-547c-4752-b302-a86712c3eef6",
-            start: new Date(`${date}T11:00:00.000Z`),
-            end: null,
-            location: { id: "home", name: "home", address: "Norra Gubberogatan 3, lgh 33, 41663 Gothenburg" },
-            categories: ["timekeep", "work"],
-        });
-        addEntryToUi({
-            id: "5fd1c236-b5db-4d8d-803e-27f005047c20",
-            start: new Date(`${date}T06:00:00.000Z`),
-            end: new Date(`${date}T09:00:00.000Z`),
-            location: { id: "home", name: "home", address: "Norra Gubberogatan 3, lgh 33, 41663 Gothenburg" },
-            categories: ["timekeep", "work"],
-        });
-        addEntryToUi({
-            id: "bc4b5f20-fae5-4376-812b-55a0fc431759",
-            start: new Date(`${date}T06:45:00.000Z`),
-            end: new Date(`${date}T07:00:00.000Z`),
-            location: { id: "home", name: "home", address: "Norra Gubberogatan 3, lgh 33, 41663 Gothenburg" },
-            categories: ["meeting", "timekeep", "work"],
-        });
-
-        updateTimes();
     }
 );
 
-async function createNewEntry(): Promise<void> {
-    const entryCreateRequest = await EntryEditor.openNew()
-    console.log({ entryCreateRequest });
+async function loadInit(): Promise<void> {
+    allCategories.innerHTML = "";
+    project.innerHTML = "";
+    locationInput.innerHTML = "";
+    for (const element of document.querySelectorAll("entry-element") as NodeListOf<EntryElement>) {
+        element.remove();
+    }
+    try {
+        const init = await getInit();
+        if (init != null) {
+            allCategories.innerHTML = init.categories.map(c => `<option value="${c}">${c}</option>`).join("");
+            project.innerHTML = init.projects.map(p => `<option value="${p}">${p}</option>`).join("");
+            locationInput.innerHTML = init.locations
+                .map(l => `<option value="${l.id}">${l.name ?? l.address ?? l.id}</option>`)
+                .join("");
+            for (const entry of init.entries) {
+                addEntryToUi(entry, false);
+            }
+        }
+    } catch { }
+    updateTimes();
 }
 
-function addEntryToUi(entry: Entry): void {
+async function createNewEntry(): Promise<void> {
+    const entryCreateRequest = await EntryEditor.openNew()
+    if (entryCreateRequest == null) {
+        return;
+    }
+    const entry = await createEntry(entryCreateRequest);
+    addEntryToUi(entry);
+}
+
+function addEntryToUi(entry: Entry, shouldUpdateTimes: boolean = true): void {
     const element = document.createElement("entry-element") as EntryElement;
     element.id = entry.id;
     element.entry = entry;
     insertEntryElement(element);
-    updateTimes();
+    if (shouldUpdateTimes) {
+        updateTimes();
+    }
 }
 
 function insertEntryElement(element: EntryElement): void {
@@ -209,7 +228,7 @@ function updateTimes(): void {
     } while (false);
 
     const totalTime = startAndEndTimes.reduce((t, e) => t + (e.end.getTime() - e.start.getTime()), 0);
-    const hours = Math.round(totalTime / 1000 / 60 / 60).toString();
+    const hours = Math.floor(totalTime / 1000 / 60 / 60).toString();
     const minutes = Math.round(totalTime / 1000 / 60 % 60).toString().padStart(2, "0");
     timeWorked.innerText = `${hours}h ${minutes}m`;
 

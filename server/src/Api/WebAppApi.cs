@@ -91,6 +91,7 @@ public static class WebAppApi
         {
             return TypedResults.NotFound();
         }
+        await context.Entry(entry).Collection(e => e.Categories).LoadAsync(cancellationToken);
 
         if (entry.Start != request.Start)
         {

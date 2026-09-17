@@ -1,4 +1,4 @@
-import type { Entry, EntryCreateRequest } from "./models";
+import type { Entry, EntryRequest } from "./models";
 import { toLocalISOString } from "./time";
 
 declare const entryDialog: HTMLDialogElement;
@@ -9,8 +9,7 @@ declare const project: HTMLSelectElement;
 declare const categories: HTMLSpanElement;
 declare const categoryInput: HTMLInputElement;
 declare const addCategoryButton: HTMLButtonElement;
-declare const allCategories: HTMLDataListElement;
-declare const location: HTMLInputElement;
+declare const locationInput: HTMLInputElement;
 
 window.addEventListener(
     "load",
@@ -55,7 +54,7 @@ function addCategory() {
     categoryInput.value = "";
 }
 
-function open(reason: string, input: Entry | null): Promise<EntryCreateRequest | null> {
+function open(reason: string, input: Entry | null): Promise<EntryRequest | null> {
     return new Promise((resolve => {
         entryFormReason.textContent = reason;
         if (input != null) {
@@ -63,13 +62,13 @@ function open(reason: string, input: Entry | null): Promise<EntryCreateRequest |
             end.value = toLocalISOString(input.end);
             project.value = "";
             categories.innerHTML = [...input.categories].map(c => `<span>${c}</span>`).join("");
-            location.value = input.location?.id ?? "";
+            locationInput.value = input.location?.id ?? "";
         } else {
             start.value = toLocalISOString(new Date());
             end.value = "";
             project.value = "";
             categories.innerHTML = "";
-            location.value = "";
+            locationInput.value = "";
         }
         entryDialog.returnValue = "close";
         entryDialog.addEventListener(
@@ -84,7 +83,7 @@ function open(reason: string, input: Entry | null): Promise<EntryCreateRequest |
                     end: end.value != "" ? new Date(end.value) : null,
                     project: project.value != "" ? project.value : null,
                     categories: [...categories.querySelectorAll("span")].map(s => s.innerText),
-                    location: location.value != "" ? location.value : null,
+                    location: locationInput.value != "" ? locationInput.value : null,
                 });
             },
             { once: true },
@@ -96,11 +95,11 @@ function open(reason: string, input: Entry | null): Promise<EntryCreateRequest |
 }
 
 export class EntryEditor {
-    static openNew(): Promise<EntryCreateRequest | null> {
+    static openNew(): Promise<EntryRequest | null> {
         return open("New", null);
     }
 
-    static openEdit(input: Entry): Promise<EntryCreateRequest | null> {
+    static openEdit(input: Entry): Promise<EntryRequest | null> {
         return open("Edit", input);
     }
 }

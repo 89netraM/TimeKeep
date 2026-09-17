@@ -254,6 +254,8 @@ main {
       h2 {
         font-variant-numeric: tabular-nums;
         color: var(--text-h);
+        text-align: center;
+        align-self: end;
       }
 
       &:has(#timeWorked) {

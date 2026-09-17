@@ -24,6 +24,7 @@ window.addEventListener(
                 }
 
                 localStorage.setItem(tokenKey, token.value);
+                Settings.updateCallback?.();
             },
         );
     },
@@ -33,4 +34,6 @@ export class Settings {
     static get token(): string | null {
         return localStorage.getItem(tokenKey);
     }
+
+    static updateCallback: (() => any) | null = null;
 }
